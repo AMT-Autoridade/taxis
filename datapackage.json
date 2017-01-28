@@ -1,0 +1,42 @@
+{
+  "name" : "",
+  "title" : "",
+  "license" : {
+    "type": "CC-BY-SA-4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "sources": [{
+    "name": "Autoridade da Mobilidade e dos Transportes",
+    "web": "http://www.amt-autoridade.pt"
+  }],
+  "contributors": [{
+    "name": "Olaf Veerman",
+    "web": "olaf.veerman@gmail.com"
+  }],
+  "resources": [
+    {
+      "name": "taxis",
+      "description": "Data about the absolute number of taxis and available licenses by concelho by year.",
+      "path": "data/taxis.csv",
+      "sources": [],
+      "schema": "taxis"
+    },
+    {
+      "name": "population",
+      "description": "",
+      "path": "data/population.csv",
+      "sources": [],
+      "schema": null
+    }
+  ],
+  "schemas": {
+    "taxis": {
+      "name": "dico",
+      "title": "DiCo",
+      "description": "The unique code of the Concelho (co), containing an indication of its parent District (di).",
+      "type": "number",
+      "format": null,
+      "missingValue": "",
+    }
+  }
+}
