@@ -5,12 +5,13 @@
   "scripts": {
     "data": "node ./scripts/index.js",
     "lint": "eslint scripts/ --ext .js",
-    "test": "echo \"No tests\" && exit 0"
+    "test": "ava"
   },
   "author": "Olaf Veerman <olaf.veerman@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "async": "^2.1.4",
+    "ava": "^0.18.1",
     "csv-parse": "^1.2.0",
     "eslint": "^2.9.0",
     "eslint-config-standard": "^5.3.1",
