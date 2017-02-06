@@ -12,13 +12,13 @@ test('Generate separate objects for unique concelho, year, indicator combination
   ]
   let expected = [
     {
-      dico: 1401,
+      id: 1401,
       indicator: '1',
       year: 1998,
       value: 60
     },
     {
-      dico: 1401,
+      id: 1401,
       indicator: '1',
       year: 1999,
       value: 66
@@ -37,7 +37,7 @@ test('Return empty strings as null', t => {
   ]
   let expected = [
     {
-      dico: 1401,
+      id: 1401,
       indicator: '1',
       year: 1999,
       value: null
@@ -64,8 +64,8 @@ test('Add data to a concelho', t => {
     'data': []
   }
   let inputData = [
-    { dico: 1401, indicator: '1', year: 2015, value: 61 },
-    { dico: 1402, indicator: '1', year: 2016, value: 61 }
+    { id: 1401, indicator: '1', year: 2015, value: 61 },
+    { id: 1402, indicator: '1', year: 2016, value: 61 }
   ]
   let expected = {
     'id': 1401,
