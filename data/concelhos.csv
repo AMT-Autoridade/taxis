@@ -1,4 +1,4 @@
-concelho,concelho_id,distrito,distrito_id,nut1,nut1_id,nut2,nut2_id,nut3,nut3_id
+concelho_name,concelho,distrito_name,distrito,nut1_name,nut1,nut2_name,nut2,nut3_name,nut3
 Águeda,101,Aveiro,1,Continente,PT1,Centro,PT16,Região de Aveiro,PT16D
 Albergaria-a-Velha,102,Aveiro,1,Continente,PT1,Centro,PT16,Região de Aveiro,PT16D
 Anadia,103,Aveiro,1,Continente,PT1,Centro,PT16,Região de Aveiro,PT16D

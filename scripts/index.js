@@ -29,15 +29,13 @@ function (err, results) {
 
   async.waterfall([
     function (cb) {
+      // Prep the raw taxi data for further use
       cb(null, lib.prepRawData(taxiData))
     },
     function (data, cb) {
+      // Add data to each concelho
       concelhoData.map(c => lib.addData(c, data))
       cb(null, concelhoData)
-    },
-    function (data, cb) {
-      // aggregate data for each district + nut
-      cb(null, data)
     }
   ], function (err, data) {
     if (err) { console.log(err.message) }
