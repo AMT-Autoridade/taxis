@@ -8,41 +8,38 @@ const dataTaxis = fs.readFileSync('./data/taxis.csv')
 
 async.parallel([
   function (cb) {
-    // Parse metadata about the concelhos
+    // Parse meta-data about the concelhos
+    // Returns an array with all admin areas and their meta-data
     parse(metaConcelhos, {columns: true}, function (err, output) {
-      let areas = lib.processConcelhos(output)
+      let areas = lib.generateAreas(output)
       cb(err, areas)
     })
   },
   function (cb) {
     // Parse source data with taxis by concelho
+    // Returns an array of records for a unique concelho, year, indicator
     parse(dataTaxis, {columns: true}, function (err, output) {
-      cb(err, output)
+      let data = lib.prepRawData(output)
+      cb(err, data)
     })
   }
 ],
 function (err, results) {
   if (err) { console.log(err.message) }
 
-  var concelhoData = results[0]
+  // Combine the area meta-data with the taxi data
+  var areaData = results[0]
   var taxiData = results[1]
+  var processedData = areaData.map(area => lib.addData(area, taxiData))
 
-  async.waterfall([
+  // Write the processed data to JSON files
+  async.parallel([
     function (cb) {
-      cb(null, lib.prepRawData(taxiData))
-    },
-    function (data, cb) {
-      concelhoData.map(c => lib.addData(c, data))
-      cb(null, concelhoData)
-    },
-    function (data, cb) {
-      // aggregate data for each district + nut
-      cb(null, data)
+      fs.writeFileSync('./data.json', JSON.stringify(processedData))
+      cb()
     }
-  ], function (err, data) {
+  ], function (err) {
     if (err) { console.log(err.message) }
-
-    fs.writeFileSync('./data.json', JSON.stringify(data))
     console.log('Done!')
   })
 })

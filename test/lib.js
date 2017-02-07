@@ -12,13 +12,13 @@ test('Generate separate objects for unique concelho, year, indicator combination
   ]
   let expected = [
     {
-      dico: 1401,
+      id: 1401,
       indicator: '1',
       year: 1998,
       value: 60
     },
     {
-      dico: 1401,
+      id: 1401,
       indicator: '1',
       year: 1999,
       value: 66
@@ -37,7 +37,7 @@ test('Return empty strings as null', t => {
   ]
   let expected = [
     {
-      dico: 1401,
+      id: 1401,
       indicator: '1',
       year: 1999,
       value: null
@@ -58,20 +58,96 @@ test('Don\'t return anything if there is no year', t => {
   t.deepEqual(lib.prepRawData(input), expected)
 })
 
-test('Add data to a concelho', t => {
-  let inputConcelho = {
+test('Add data to a single area', t => {
+  let inputArea = {
     'id': 1401,
+    'concelhos': [1401],
     'data': []
   }
   let inputData = [
-    { dico: 1401, indicator: '1', year: 2015, value: 61 },
-    { dico: 1402, indicator: '1', year: 2016, value: 61 }
+    { id: 1401, indicator: '1', year: 2015, value: 61 },
+    { id: 1401, indicator: '1', year: 2016, value: 13 }
   ]
   let expected = {
     'id': 1401,
+    'concelhos': [1401],
     'data': [
-      { indicator: '1', year: 2015, value: 61 }
+      { indicator: '1', year: 2015, value: 61 },
+      { indicator: '1', year: 2016, value: 13 }
     ]
   }
-  t.deepEqual(lib.addData(inputConcelho, inputData), expected)
+  t.deepEqual(lib.addData(inputArea, inputData), expected)
+})
+
+test('Add data to an area and aggregate properly', t => {
+  let inputArea = {
+    'id': 14,
+    'concelhos': [1401, 1402],
+    'data': []
+  }
+  let inputData = [
+    { id: 1401, indicator: '1', year: 2015, value: 61 },
+    { id: 1402, indicator: '1', year: 2015, value: 4 },
+    { id: 1401, indicator: '1', year: 2016, value: 87 },
+    { id: 1501, indicator: '1', year: 2016, value: 87 }
+  ]
+  let expected = {
+    'id': 14,
+    'concelhos': [1401, 1402],
+    'data': [
+      { indicator: '1', year: 2015, value: 65 },
+      { indicator: '1', year: 2016, value: 87 }
+    ]
+  }
+  t.deepEqual(lib.addData(inputArea, inputData), expected)
+})
+
+test('Add data to an area and aggregate properly', t => {
+  let inputArea1 = {
+    'id': 1401,
+    'concelhos': [1401],
+    'data': []
+  }
+  let inputArea2 = {
+    'id': 14,
+    'concelhos': [1401, 1402],
+    'data': []
+  }
+  let inputData = [
+    { id: 1401, indicator: '1', year: 2015, value: 61 },
+    { id: 1402, indicator: '1', year: 2015, value: 4 },
+    { id: 1401, indicator: '1', year: 2016, value: 87 }
+  ]
+  let expected2 = {
+    'id': 14,
+    'concelhos': [1401, 1402],
+    'data': [
+      { indicator: '1', year: 2015, value: 65 },
+      { indicator: '1', year: 2016, value: 87 }
+    ]
+  }
+  lib.addData(inputArea1, inputData)
+  t.deepEqual(lib.addData(inputArea2, inputData), expected2)
+})
+
+test('Add data to an area and aggregate properly with nulls', t => {
+  let inputArea = {
+    'id': 14,
+    'concelhos': [1401, 1402],
+    'data': []
+  }
+  let inputData = [
+    { id: 1401, indicator: '1', year: 2015, value: 61 },
+    { id: 1402, indicator: '1', year: 2015, value: null },
+    { id: 1401, indicator: '1', year: 2016, value: 87 }
+  ]
+  let expected = {
+    'id': 14,
+    'concelhos': [1401, 1402],
+    'data': [
+      { indicator: '1', year: 2015, value: 61 },
+      { indicator: '1', year: 2016, value: 87 }
+    ]
+  }
+  t.deepEqual(lib.addData(inputArea, inputData), expected)
 })
