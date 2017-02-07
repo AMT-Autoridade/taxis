@@ -30,7 +30,7 @@ function (err, results) {
   // Combine the area meta-data with the taxi data
   var areaData = results[0]
   var taxiData = results[1]
-  var processedData = areaData.map(c => lib.addData(c, taxiData))
+  var processedData = areaData.map(area => lib.addData(area, taxiData))
 
   // Write the processed data to JSON files
   async.parallel([

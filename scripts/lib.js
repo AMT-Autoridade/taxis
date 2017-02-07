@@ -44,7 +44,7 @@ function uniqueValues (array, key) {
 }
 
 /**
- * Generate base data for the different admin areas
+ * Generate base meta-data for the different admin areas
  *
  * @name generateAreas
  * @param {Array} concelhos
@@ -68,7 +68,7 @@ module.exports.generateAreas = function (concelhos) {
         'id': parseInt(area) || area,
         'name': childConcelhos[0][`${type}_name`],
         'type': type,
-        'concelhos': childConcelhos.map(o => o.concelho),
+        'concelhos': childConcelhos.map(o => parseInt(o.concelho) || o.concelho),
         'data': []
       })
     })
@@ -77,18 +77,25 @@ module.exports.generateAreas = function (concelhos) {
 }
 
 /**
- * Add data to a concelho
+ * Add data to an administrative area.
  *
  * @name addData
- * @param {Object} c - The concelho object
- * @param {Array} data - [{ dico: 1401, indicator: '1', year: 2011, value: 61 }]
+ * @param {Object} area - An object with meta-data for the admin area
+ * @param {Array} data - [{ id: 1401, indicator: '1', year: 2011, value: 61 }]
  */
-module.exports.addData = function (c, data) {
-  data
-    .filter(o => c.id === o.id)
-    .forEach(d => {
-      delete d.id
-      c.data.push(d)
-    })
-  return c
+module.exports.addData = function (area, data) {
+  let clonedData = JSON.parse(JSON.stringify(data))
+  area.data = clonedData
+    .filter(o => area.concelhos.indexOf(o.id) !== -1)
+    .reduce((a, b) => {
+      delete b.id
+      let match = a.findIndex(o => o.indicator === b.indicator && o.year === b.year)
+      if (match === -1) {
+        a.push(b)
+      } else {
+        a[match].value += b.value
+      }
+      return a
+    }, [])
+  return area
 }
