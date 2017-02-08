@@ -20,7 +20,7 @@ module.exports.prepRawData = function (data) {
           'id': parseInt(o.dico),
           'indicator': o.indicator,
           'year': parseInt(k),
-          'value': parseInt(o[k]) || null
+          'value': isNaN(parseInt(o[k])) ? null : parseInt(o[k])
         })
       }
     })

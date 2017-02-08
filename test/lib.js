@@ -27,6 +27,25 @@ test('Generate separate objects for unique concelho, year, indicator combination
   t.deepEqual(lib.prepRawData(input), expected)
 })
 
+test('Return 0 as 0', t => {
+  let input = [
+    {
+      dico: '1401',
+      indicator: '1',
+      '1999': '0'
+    }
+  ]
+  let expected = [
+    {
+      id: 1401,
+      indicator: '1',
+      year: 1999,
+      value: 0
+    }
+  ]
+  t.deepEqual(lib.prepRawData(input), expected)
+})
+
 test('Return empty strings as null', t => {
   let input = [
     {
@@ -102,7 +121,7 @@ test('Add data to an area and aggregate properly', t => {
   t.deepEqual(lib.addData(inputArea, inputData), expected)
 })
 
-test('Add data to an area and aggregate properly', t => {
+test('Aggregate properly on successive attempts', t => {
   let inputArea1 = {
     'id': 1401,
     'concelhos': [1401],
