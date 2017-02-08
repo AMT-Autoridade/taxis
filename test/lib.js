@@ -77,6 +77,25 @@ test('Don\'t return anything if there is no year', t => {
   t.deepEqual(lib.prepRawData(input), expected)
 })
 
+test('Don\'t return anything if there is no year', t => {
+  let input = [
+    {
+      dico: '1401',
+      name: 'Braga'
+    },
+    {
+      dico: '1402',
+      name: 'Priscos'
+    },
+    {
+      dico: '1403',
+      name: 'Priscos'
+    }
+  ]
+  let expected = ['Braga', 'Priscos']
+  t.deepEqual(lib.uniqueValues(input, 'name'), expected)
+})
+
 test('Add data to a single area', t => {
   let inputArea = {
     'id': 1401,
