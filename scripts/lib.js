@@ -1,3 +1,5 @@
+const omit = require('lodash.omit')
+
 /**
  * Prepare the raw data parsed from the CSV
  *
@@ -84,14 +86,12 @@ module.exports.generateAreas = function (concelhos) {
  * @param {Array} data - [{ id: 1401, indicator: '1', year: 2011, value: 61 }]
  */
 module.exports.addData = function (area, data) {
-  let clonedData = JSON.parse(JSON.stringify(data))
-  area.data = clonedData
+  area.data = data
     .filter(o => area.concelhos.indexOf(o.id) !== -1)
     .reduce((a, b) => {
-      delete b.id
-      let match = a.findIndex(o => o.indicator === b.indicator && o.year === b.year)
+      const match = a.findIndex(o => o.indicator === b.indicator && o.year === b.year)
       if (match === -1) {
-        a.push(b)
+        a.push(omit(b, ['id']))
       } else {
         a[match].value += b.value
       }
