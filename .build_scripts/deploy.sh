@@ -3,7 +3,7 @@ set -e # halt script on error
 
 echo "Get ready, we're pushing to github!"
 mkdir dist
-mv ./data.json dist
+mv ./export/*.json dist
 cd dist
 git init
 git config user.name "Travis-CI"

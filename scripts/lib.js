@@ -20,7 +20,7 @@ module.exports.prepRawData = function (data) {
           'id': parseInt(o.dico),
           'indicator': o.indicator,
           'year': parseInt(k),
-          'value': parseInt(o[k]) || null
+          'value': isNaN(parseInt(o[k])) ? null : parseInt(o[k])
         })
       }
     })
@@ -39,7 +39,7 @@ module.exports.prepRawData = function (data) {
  * uniqueValues([{ id: 1, district: 'Abrantes' }, { id: 2, district: 'Abrantes' }, { id: 3, district: 'Santarem' }], 'district')
  * @returns An array of unique values
  */
-function uniqueValues (array, key) {
+module.exports.uniqueValues = function (array, key) {
   return array
     .map(o => o[key])
     .filter((o, i, a) => a.indexOf(o) === i)
@@ -59,7 +59,7 @@ module.exports.generateAreas = function (concelhos) {
   let areaTypes = ['concelho', 'distrito', 'nut1', 'nut2', 'nut3']
   areaTypes.forEach(type => {
     // Generate the unique array of areas of this type
-    let uniqueAreas = uniqueValues(concelhos, type)
+    let uniqueAreas = module.exports.uniqueValues(concelhos, type)
 
     uniqueAreas.map(area => {
       // Generate an array with all the concelhos that are part of this area
@@ -89,6 +89,7 @@ module.exports.addData = function (area, data) {
   area.data = data
     .filter(o => area.concelhos.indexOf(o.id) !== -1)
     .reduce((a, b) => {
+      // Check if the accumulator already has an object for that year+indicator
       const match = a.findIndex(o => o.indicator === b.indicator && o.year === b.year)
       if (match === -1) {
         a.push(omit(b, ['id']))

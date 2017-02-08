@@ -32,13 +32,14 @@ function (err, results) {
   var taxiData = results[1]
   var processedData = areaData.map(area => lib.addData(area, taxiData))
 
-  // Write the processed data to JSON files
-  async.parallel([
-    function (cb) {
-      fs.writeFileSync('./data.json', JSON.stringify(processedData))
+  // Generate a JSON file for each admin area type
+  const tasks = lib.uniqueValues(areaData, 'type').map(type => {
+    return function (cb) {
+      fs.writeFileSync(`./export/${type}.json`, JSON.stringify(processedData.filter(o => o.type === type)))
       cb()
     }
-  ], function (err) {
+  })
+  async.parallel(tasks, function (err) {
     if (err) { console.log(err.message) }
     console.log('Done!')
   })
