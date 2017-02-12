@@ -3,14 +3,11 @@ const fs = require('fs')
 const parse = require('csv-parse')
 const lib = require('./lib.js')
 
-const metaConcelhos = fs.readFileSync('./data/concelhos.csv')
-const dataTaxis = fs.readFileSync('./data/taxis.csv')
-
 async.parallel([
   function (cb) {
     // Parse meta-data about the concelhos
     // Returns an array with all admin areas and their meta-data
-    parse(metaConcelhos, {columns: true}, function (err, output) {
+    parse(fs.readFileSync('./data/concelhos.csv'), {columns: true}, function (err, output) {
       let areas = lib.generateAreas(output)
       cb(err, areas)
     })
@@ -18,7 +15,15 @@ async.parallel([
   function (cb) {
     // Parse source data with taxis by concelho
     // Returns an array of records for a unique concelho, year, indicator
-    parse(dataTaxis, {columns: true}, function (err, output) {
+    parse(fs.readFileSync('./data/taxis.csv'), {columns: true}, function (err, output) {
+      let data = lib.prepRawData(output)
+      cb(err, data)
+    })
+  },
+  function (cb) {
+    // Parse population estimates by concelho
+    // Returns an array of records for each concelho + year
+    parse(fs.readFileSync('./data/population.csv'), {columns: true}, function (err, output) {
       let data = lib.prepRawData(output)
       cb(err, data)
     })
@@ -27,13 +32,14 @@ async.parallel([
 function (err, results) {
   if (err) { console.log(err.message) }
 
-  // Combine the area meta-data with the taxi data
-  var areaData = results[0]
-  var taxiData = results[1]
-  var processedData = areaData.map(area => lib.addData(area, taxiData))
+  const areaMeta = results[0]
+  // Merge the raw taxi data (results[1]) and the population estimates (results[2])
+  const rawData = [].concat(results[1], results[2])
+  // Combine the area meta-data with the raw data
+  const processedData = areaMeta.map(area => lib.addData(area, rawData))
 
   // Generate a JSON file for each admin area type
-  const tasks = lib.uniqueValues(areaData, 'type').map(type => {
+  const tasks = lib.uniqueValues(areaMeta, 'type').map(type => {
     return function (cb) {
       fs.writeFileSync(`./export/${type}.json`, JSON.stringify(processedData.filter(o => o.type === type)))
       cb()
