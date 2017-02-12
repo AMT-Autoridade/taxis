@@ -2,8 +2,8 @@
   "name" : "",
   "title" : "",
   "license" : {
-    "type": "CC-BY-SA-4.0",
-    "url": "https://creativecommons.org/licenses/by-sa/4.0/"
+    "type": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
   },
   "sources": [{
     "name": "Autoridade da Mobilidade e dos Transportes",
@@ -17,16 +17,22 @@
     {
       "name": "taxis",
       "description": "Data about the absolute number of taxis and available licenses by concelho by year.",
-      "path": "data/taxis.csv",
+      "data": "data/taxis.csv",
       "sources": [],
       "schema": "taxis"
     },
     {
       "name": "population",
-      "description": "",
-      "path": "data/population.csv",
-      "sources": [],
-      "schema": null
+      "title": "Population Estimates",
+      "description": "Annual estimates of resident population by concelho. Estimates generated on February 10, 2017.",
+      "data": "data/population.csv",
+      "sources": [
+        {
+          "name": "ine",
+          "title": "Instituto Nacional de Estatística",
+          "uri": "https://www.ine.pt"
+        }
+      ]
     }
   ],
   "schemas": {

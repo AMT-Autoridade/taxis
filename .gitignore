@@ -1,3 +1,5 @@
 export/*.json
 node_modules
 data.json
+dist/*
+*~lock*.csv#
