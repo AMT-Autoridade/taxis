@@ -1,6 +1,13 @@
 #!/bin/bash
 
-# This script downloads prepares Portuguese boundary data.
+# This script ingests a series of shapefiles with polygons for Portuguese
+# freguesias (parishes) from CAOP (DGT).
+# It produces a single simplified TopoJSON that contains polygons for all
+# concelhos, distritos, nut1, nut2 and nut3.
+#
+# The source data can be downloaded in .rar format from http://www.dgterritorio.pt/cartografia_e_geodesia/cartografia/carta_administrativa_oficial_de_portugal__caop_/caop__download_/
+# and should be placed (uncompressed) in the source folder.
+#
 # Requires
 # - ogr
 # - unrar
@@ -12,8 +19,12 @@
 
 SRC_DIR="./src"
 TMP_DIR='./tmp'
-BASE_NAME='caop_concelhos'
 EXP_DIR="./export"
+BASE_NAME='pt-areas'
+
+
+###############################################################################
+# Doing some housekeeping and basic checks
 
 error()
 {
@@ -42,6 +53,10 @@ mkdir -p $EXP_DIR
 
 mkdir $TMP_DIR
 
+
+###############################################################################
+# Unpack and organize
+
 echo "Unpacking the source data..."
 for RAR in "$SRC_DIR"/*
 do
@@ -52,50 +67,123 @@ echo "Merging the different shapefiles into one..."
 cd $TMP_DIR
 for SHP in ./*.shp
 do
-  if [ -f ./merged.shp ]
+  if [ -f ./raw_merged.shp ]
     then
-      $cmd_ogr2ogr -update -append merged.shp $SHP -nln merged -t_srs EPSG:4326
+      $cmd_ogr2ogr -update -append raw_merged.shp $SHP -nln raw_merged -t_srs EPSG:4326
   else 
-    $cmd_ogr2ogr merged.shp $SHP -t_srs EPSG:4326
+    $cmd_ogr2ogr raw_merged.shp $SHP -t_srs EPSG:4326
   fi
 done
 
-echo "Dissolving polygons from same concelho..."
+
+###############################################################################
+# Create the base file with concelhos
+
+echo "Dissolving freguesias into concelho..."
 # Dissolve all polygons
 # ST_buffer is necessary to fix issues with self-intersecting polygons in the
 # source data
 $cmd_ogr2ogr \
-  ./$BASE_NAME.shp \
-  ./merged.shp \
+  ./concelhos.shp \
+  ./raw_merged.shp \
   -dialect sqlite \
-  -sql "SELECT ST_union(ST_BUFFER(geometry, 0)),Dicofre FROM merged GROUP BY substr(Dicofre,1,4)"
+  -sql "SELECT ST_union(ST_BUFFER(geometry, 0)), Dicofre \
+        FROM raw_merged \
+        GROUP BY substr(Dicofre,1,4)"
 
 echo "Add indication of Dico..."
-$cmd_ogrinfo \
-  ./$BASE_NAME.shp \
-  -sql "ALTER TABLE $BASE_NAME RENAME COLUMN Dicofre TO Dico"
 
 # Dico consists of the first 4 digits of the Dicofre
-$cmd_ogrinfo \
-  ./$BASE_NAME.shp \
+$cmd_ogrinfo -q \
+  ./concelhos.shp \
   -dialect sqlite \
-  -sql "UPDATE $BASE_NAME SET Dico = substr(Dico,1,4)"
+  -sql "UPDATE concelhos SET Dicofre = CAST(SUBSTR(Dicofre,1,4) AS INTEGER)"
 
-cd ..
-mv $TMP_DIR/$BASE_NAME* $EXP_DIR
-cd $EXP_DIR
+echo "Joining concelho meta-data..."
+# Join metadata from a CSV file with concelho meta-data
+$cmd_ogr2ogr \
+  -sql "SELECT  csv.concelho as concelho, \
+                csv.distrito as distrito, \
+                csv.nut1 as nut1, \
+                csv.nut2 as nut2, \
+                csv.nut3 as nut3
+        FROM concelhos shp \
+        LEFT JOIN '../../concelhos.csv'.concelhos csv \
+        ON shp.Dicofre = csv.concelho" \
+  ./concelhos_augmented.shp \
+  ./concelhos.shp
 
-echo "Convert to GeoJSON..."
+# Add empty placeholder columns. Need two separate statements as ogr doesn't
+# support multiple ADD COLUMN in the same
+$cmd_ogrinfo -q \
+  ./concelhos_augmented.shp \
+  -sql "ALTER TABLE concelhos_augmented \
+        ADD COLUMN type CHARACTER(10)"
+$cmd_ogrinfo -q \
+  ./concelhos_augmented.shp \
+  -sql "ALTER TABLE concelhos_augmented \
+        ADD COLUMN id CHARACTER(4)"
+
+
+###############################################################################
+# Use the base file with concelhos to generate a shapefile that contains
+# polygons for all administrative areas of all types.
+
+echo "Creating a shapefile with polygons for all areas of all types..."
+# Add a layer for all the other types
+for AREA in concelho distrito nut1 nut2 nut3
+do
+  $cmd_ogr2ogr \
+    ./tmp_$AREA.shp \
+    ./concelhos_augmented.shp
+
+  $cmd_ogrinfo -q \
+    -dialect sqlite \
+    -sql "UPDATE tmp_$AREA \
+          SET type = '$AREA', \
+              id = $AREA" \
+    ./tmp_$AREA.shp
+
+  if [ -f ./all_areas.shp ]
+    then
+      $cmd_ogr2ogr \
+        -update -append \
+        all_areas.shp \
+        ./tmp_$AREA.shp \
+        -nln all_areas \
+        -dialect sqlite \
+        -sql "SELECT ST_union(ST_BUFFER(geometry, 0)),id,type \
+              FROM tmp_$AREA \
+              GROUP BY id"
+  else
+    $cmd_ogr2ogr \
+      ./all_areas.shp \
+      ./tmp_$AREA.shp \
+      -dialect sqlite \
+      -sql "SELECT ST_union(ST_BUFFER(geometry, 0)),id,type \
+            FROM tmp_$AREA \
+            GROUP BY id"
+  fi
+done
+
+echo "Converting to GeoJSON..."
+# Export to GeoJSON
 $cmd_ogr2ogr \
   -f "GeoJSON" \
-  ./$BASE_NAME.geojson \
-  ./$BASE_NAME.shp \
-
-echo "Convert to TopoJSON..."
-$cmd_geo2topo ./$BASE_NAME.geojson > ./$BASE_NAME.topojson
-
-echo "Generate a simplified TopoJSON..."
-$cmd_toposimplify -P 0.05 ./$BASE_NAME.topojson > ./$BASE_NAME-P0_05.topojson
+  ./all_areas.geojson \
+  ./all_areas.shp
 
 cd ..
+
+
+###############################################################################
+# Generate the TopoJSON exports
+
+echo "Converting to TopoJSON..."
+$cmd_geo2topo $TMP_DIR/all_areas.geojson > $TMP_DIR/all_areas.topojson
+
+echo "Generating the final simplified TopoJSON..."
+$cmd_toposimplify -P 0.02 -f $TMP_DIR/all_areas.topojson > $EXP_DIR/$BASE_NAME-P0_02.topojson
+
+echo "Done. Enjoy!"
 rm -r $TMP_DIR
