@@ -170,7 +170,7 @@ echo "Converting to GeoJSON..."
 # Export to GeoJSON
 $cmd_ogr2ogr \
   -f "GeoJSON" \
-  ./all_areas.geojson \
+  ./$BASE_NAME.geojson \
   ./all_areas.shp
 
 cd ..
@@ -180,7 +180,7 @@ cd ..
 # Generate the TopoJSON exports
 
 echo "Converting to TopoJSON..."
-$cmd_geo2topo $TMP_DIR/all_areas.geojson > $TMP_DIR/all_areas.topojson
+$cmd_geo2topo $TMP_DIR/$BASE_NAME.geojson > $TMP_DIR/$BASE_NAME.topojson
 
 echo "Generating the final simplified TopoJSON..."
 $cmd_toposimplify -P 0.02 -f $TMP_DIR/all_areas.topojson > $EXP_DIR/$BASE_NAME-P0_02.topojson
