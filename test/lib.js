@@ -77,6 +77,128 @@ test('Don\'t return anything if there is no year', t => {
   t.deepEqual(lib.prepRawData(input), expected)
 })
 
+test('Backfill null values', t => {
+  let input = [
+    {
+      id: 1401,
+      indicator: '1',
+      year: 1999,
+      value: null
+    },
+    {
+      id: 1401,
+      indicator: '1',
+      year: 2001,
+      value: 160
+    },
+    {
+      id: 1401,
+      indicator: '1',
+      year: 2000,
+      value: 130
+    }
+  ]
+  let expected = [
+    {
+      id: 1401,
+      indicator: '1',
+      year: 1999,
+      value: 130,
+      backfill: 2000
+    },
+    {
+      id: 1401,
+      indicator: '1',
+      year: 2001,
+      value: 160
+    },
+    {
+      id: 1401,
+      indicator: '1',
+      year: 2000,
+      value: 130
+    }
+  ]
+  t.deepEqual(lib.backfillData(input), expected)
+})
+
+test('Don\'t fill null values forward', t => {
+  let input = [
+    {
+      id: 1401,
+      indicator: '1',
+      year: 2001,
+      value: null
+    },
+    {
+      id: 1401,
+      indicator: '1',
+      year: 1999,
+      value: null
+    },
+    {
+      id: 1401,
+      indicator: '1',
+      year: 2000,
+      value: 130
+    }
+  ]
+  let expected = [
+    {
+      id: 1401,
+      indicator: '1',
+      year: 2001,
+      value: null
+    },
+    {
+      id: 1401,
+      indicator: '1',
+      year: 1999,
+      value: 130,
+      backfill: 2000
+    },
+    {
+      id: 1401,
+      indicator: '1',
+      year: 2000,
+      value: 130
+    }
+  ]
+  t.deepEqual(lib.backfillData(input), expected)
+})
+
+test('Return null if backfill is not possible', t => {
+  let input = [
+    {
+      id: 1401,
+      indicator: '1',
+      year: 1999,
+      value: null
+    },
+    {
+      id: 1401,
+      indicator: '1',
+      year: 2000,
+      value: null
+    }
+  ]
+  let expected = [
+    {
+      id: 1401,
+      indicator: '1',
+      year: 1999,
+      value: null
+    },
+    {
+      id: 1401,
+      indicator: '1',
+      year: 2000,
+      value: null
+    }
+  ]
+  t.deepEqual(lib.backfillData(input), expected)
+})
+
 test('Don\'t return anything if there is no year', t => {
   let input = [
     {

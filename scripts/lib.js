@@ -29,6 +29,33 @@ module.exports.prepRawData = function (data) {
 }
 
 /**
+ * Backfill null data with data from the next year that has
+ *
+ * @name backfillData
+ * @param {Array} data
+ * @example
+ * // returns [{ year: 2015, value: null, dico: 1401, indicator: '1' }, { year: 2016, value: 66, dico: 1401, indicator: '1' }]
+ * prepRawData([{ year: 2015, value: 66, dico: 1401, indicator: '1', backfill: 2016 }, { year: 2016, value: 66, dico: 1401, indicator: '1' }])
+ * @returns {Array} An array of objects. Each contains a unique record with data for one year, indicator, concelho
+ */
+module.exports.backfillData = function (data) {
+  return data.map(o => {
+    if (o.value === null) {
+      // Find the first available year with data
+      let firstAvailable = data
+        .filter(d => d.indicator === o.indicator && d.id === o.id && d.value !== null && d.year > o.year)
+        .find((e, i, a) => e.year === Math.min(...a.map(o => o.year)))
+      // In case there is no first available, the value will remain null
+      if (firstAvailable) {
+        o.value = firstAvailable.value
+        o.backfill = firstAvailable.year
+      }
+    }
+    return o
+  })
+}
+
+/**
  * Generate an array of unique values from an array of objects
  *
  * @name uniqueValues

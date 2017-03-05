@@ -35,8 +35,12 @@ function (err, results) {
   const areaMeta = results[0]
   // Merge the raw taxi data (results[1]) and the population estimates (results[2])
   const rawData = [].concat(results[1], results[2])
+
+  // Back-fill those nulls
+  const backfilledData = lib.backfillData(rawData)
+
   // Combine the area meta-data with the raw data
-  const processedData = areaMeta.map(area => lib.addData(area, rawData))
+  const processedData = areaMeta.map(area => lib.addData(area, backfilledData))
 
   // Generate a JSON file for each admin area type
   var tasks = lib.uniqueValues(areaMeta, 'type').map(type => {
