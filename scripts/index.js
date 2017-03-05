@@ -58,6 +58,15 @@ function (err, results) {
       fs.writeFileSync('./export/distritos-concelhos.json', JSON.stringify(data))
     })
 
+  // Generate a JSON file with highlighted NUT3 areas, to be used on homepage
+  // AM Lisboa, AM Porto, RA Açores, RA Madeira
+  const nutOfInterest = ['PT11A', 'PT17', 'PT200', 'PT300']
+  tasks.push(
+    function (cb) {
+      fs.writeFileSync('./export/nut3-featured.json', JSON.stringify(processedData.filter(o => nutOfInterest.indexOf(o.id) !== -1)))
+      cb()
+    })
+
   // Generate a TopoJSON file with only geometries, and another one with data for all areas
   const topo = JSON.parse(fs.readFileSync('./data/admin-areas.topojson'))
   tasks.push(
