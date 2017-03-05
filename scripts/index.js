@@ -55,8 +55,8 @@ function (err, results) {
           d.concelhos = d.concelhos.map(c => processedData.find(p => p.id === c))
           return d
         })
-      fs.writeFileSync(`./export/distritos-concelhos.json`, JSON.stringify(processedData.filter(o => o.type === 'distrito')))
-  })
+      fs.writeFileSync('./export/distritos-concelhos.json', JSON.stringify(data))
+    })
 
   // Generate a TopoJSON file with only geometries, and another one with data for all areas
   const topo = JSON.parse(fs.readFileSync('./data/admin-areas.topojson'))

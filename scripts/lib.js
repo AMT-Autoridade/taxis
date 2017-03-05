@@ -91,7 +91,7 @@ module.exports.addData = function (area, data) {
   area.data = data
     .filter(o => area.concelhos.indexOf(o.id) !== -1)
     .reduce((a, b) => {
-      ind = b.indicator
+      let ind = b.indicator
       if (!a[ind]) a[ind] = []
       // Check if the accumulator already has an object for that year+indicator
       const match = a[ind].findIndex(o => o.year === b.year)
