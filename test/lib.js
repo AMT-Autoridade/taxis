@@ -197,3 +197,66 @@ test('Add data to an area and aggregate properly with nulls', t => {
   }
   t.deepEqual(lib.addData(inputArea, inputData), expected)
 })
+
+test('Join a TopoJSON with data', t => {
+  let inputTopo = {
+    'type': 'Topology',
+    'objects': {
+      'all_areas': {
+        'type': 'GeometryCollection',
+        'geometries': [
+          {
+            'type': 'Polygon',
+            'properties': {
+              'id': '1401',
+              'type': 'concelho'
+            }
+          }
+        ]
+      }
+    }
+  }
+  let inputData = [
+    {
+      'id': 1401,
+      'data': [
+        {
+          'indicator': 'lic-geral',
+          'year': 1998,
+          'value': 39
+        }
+      ]
+    },
+    {
+      'id': 1402,
+      'data': [
+        {
+          'indicator': 'lic-geral',
+          'year': 2000,
+          'value': 32
+        }
+      ]
+    }
+  ]
+  let expected = {
+    'type': 'Topology',
+    'objects': {
+      'all_areas': {
+        'type': 'GeometryCollection',
+        'geometries': [
+          {
+            'type': 'Polygon',
+            'properties': {
+              'id': '1401',
+              'type': 'concelho',
+              'data': [
+                { indicator: 'lic-geral', year: 1998, value: 39 }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+  t.deepEqual(lib.joinTopo(inputTopo, inputData, 'id'), expected)
+})

@@ -80,9 +80,11 @@ module.exports.generateAreas = function (concelhos) {
 
 /**
  * Add data to an administrative area.
+ * This function aggregates the data for all concelhos that belong to the area.
  *
  * @name addData
- * @param {Object} area - An object with meta-data for the admin area
+ * @param {Object} area - An object with meta-data for the admin area.
+ *    {"id":1,"name":"Aveiro","type":"distrito","concelhos":[101,102,103,104]}
  * @param {Array} data - [{ id: 1401, indicator: '1', year: 2011, value: 61 }]
  */
 module.exports.addData = function (area, data) {
@@ -101,4 +103,24 @@ module.exports.addData = function (area, data) {
       return a
     }, {})
   return area
+}
+
+/**
+ * Join a TopoJSON with an array of data on a common id
+ *
+ * @name joinTopo
+ * @param {Object} topo - A TopoJSON object.
+ * @param {Array} data - [{ id: 1001, name: 'Alcobaça', data: [ indicator: 'lic-geral', 'value': null ]}]
+ * @param {String} topoKey - the key in the TopoJSON properties object to join on.
+ * @param {String} [dataKey=topoKey] - the key in the data array to join on.
+ * @returns {Object} The TopoJSON object with joined data.
+ */
+module.exports.joinTopo = function (topo, data, topoKey, dataKey = topoKey) {
+  Object.keys(topo.objects).map(k => {
+    topo.objects[k].geometries = topo.objects[k].geometries.map(g => {
+      g.properties.data = data.find(d => g.properties[topoKey].toString() === d[dataKey].toString()).data
+      return g
+    })
+  })
+  return topo
 }
