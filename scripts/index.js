@@ -39,12 +39,23 @@ function (err, results) {
   const processedData = areaMeta.map(area => lib.addData(area, rawData))
 
   // Generate a JSON file for each admin area type
-  const tasks = lib.uniqueValues(areaMeta, 'type').map(type => {
+  var tasks = lib.uniqueValues(areaMeta, 'type').map(type => {
     return function (cb) {
       fs.writeFileSync(`./export/${type}.json`, JSON.stringify(processedData.filter(o => o.type === type)))
       cb()
     }
   })
+
+  // Generate a TopoJSON file with only geometries, and another one with data for all areas
+  const topo = JSON.parse(fs.readFileSync('./data/admin-areas.topojson'))
+  tasks.push(
+    function (cb) {
+      fs.writeFileSync('./export/admin-areas.topojson', JSON.stringify(topo))
+      fs.writeFileSync('./export/admin-areas-data.topojson', JSON.stringify(lib.joinTopo(topo, processedData, 'id')))
+      cb()
+    }
+  )
+
   async.parallel(tasks, function (err) {
     if (err) { console.log(err.message) }
     console.log('Done!')

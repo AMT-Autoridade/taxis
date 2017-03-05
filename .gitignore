@@ -1,5 +1,9 @@
 export/*.json
+export/*.topojson
 node_modules
 data.json
 dist/*
 *~lock*.csv#
+data/utils/src
+data/utils/export
+data/utils/tmp
