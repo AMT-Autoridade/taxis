@@ -1,5 +1,5 @@
 const async = require('async')
-const fs = require('fs')
+const fs = require('fs-extra')
 const parse = require('csv-parse')
 const lib = require('./lib.js')
 
@@ -62,7 +62,7 @@ function (err, results) {
   const topo = JSON.parse(fs.readFileSync('./data/admin-areas.topojson'))
   tasks.push(
     function (cb) {
-      fs.writeFileSync('./export/admin-areas.topojson', JSON.stringify(topo))
+      fs.copy('./data/admin-areas.topojson', './export/admin-areas.topojson')
       fs.writeFileSync('./export/admin-areas-data.topojson', JSON.stringify(lib.joinTopo(topo, processedData, 'id')))
       cb()
     }
