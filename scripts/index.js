@@ -39,12 +39,25 @@ function (err, results) {
   const processedData = areaMeta.map(area => lib.addData(area, rawData))
 
   // Generate a JSON file for each admin area type
-  const tasks = lib.uniqueValues(areaMeta, 'type').map(type => {
+  var tasks = lib.uniqueValues(areaMeta, 'type').map(type => {
     return function (cb) {
       fs.writeFileSync(`./export/${type}.json`, JSON.stringify(processedData.filter(o => o.type === type)))
       cb()
     }
   })
+
+  // Generate a JSON file with data for all districts and concelhos
+  tasks.push(
+    function (cb) {
+      const data = processedData
+        .filter(o => o.type === 'distrito')
+        .map(d => {
+          d.concelhos = d.concelhos.map(c => processedData.find(p => p.id === c))
+          return d
+        })
+      fs.writeFileSync(`./export/distritos-concelhos.json`, JSON.stringify(processedData.filter(o => o.type === 'distrito')))
+  })
+
   async.parallel(tasks, function (err) {
     if (err) { console.log(err.message) }
     console.log('Done!')
