@@ -55,7 +55,7 @@ function (err, results) {
           d.concelhos = d.concelhos.map(c => processedData.find(p => p.id === c))
           return d
         })
-      fs.writeFileSync('./export/distritos-concelhos.json', JSON.stringify(data))
+      fs.writeFileSync('./export/national.json', JSON.stringify(data))
     })
 
   // Generate a JSON file with highlighted NUT3 areas, to be used on homepage
