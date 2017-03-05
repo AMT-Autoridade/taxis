@@ -46,11 +46,12 @@ function (err, results) {
     }
   })
 
-  // Generate a TopoJSON file with data for all areas
+  // Generate a TopoJSON file with only geometries, and another one with data for all areas
   const topo = JSON.parse(fs.readFileSync('./data/admin-areas.topojson'))
   tasks.push(
     function (cb) {
-      fs.writeFileSync('./export/admin-areas.topojson', JSON.stringify(lib.joinTopo(topo, processedData, 'id')))
+      fs.writeFileSync('./export/admin-areas.topojson', JSON.stringify(topo))
+      fs.writeFileSync('./export/admin-areas-data.topojson', JSON.stringify(lib.joinTopo(topo, processedData, 'id')))
       cb()
     }
   )
