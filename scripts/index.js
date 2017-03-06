@@ -40,15 +40,16 @@ function (err, results) {
   const backfilledData = lib.backfillData(rawData)
 
   // Combine the area meta-data with the raw data
-  const processedData = areaMeta.map(area => lib.addData(area, backfilledData))
+  const processedDataFull = areaMeta.map(area => lib.addData(area, backfilledData))
+  const processedDataRecent = areaMeta.map(area => lib.addData(area, backfilledData.filter(d => d.year >= 2006)))
 
   // Generate a JSON file for each admin area type
   var tasks = lib.uniqueValues(areaMeta, 'type').map(type => {
     return function (cb) {
-      const data = processedData.filter(o => o.type === type)
+      const data = processedDataFull.filter(o => o.type === type)
       lib.storeResponse(
         data,
-        `${type}.json`,
+        `${type}-full.json`,
         `Data about taxis in Portugal from 1998 on, aggregated by ${type}`
       )
       cb()
@@ -58,16 +59,16 @@ function (err, results) {
   // Generate a JSON file with data for all districts and concelhos
   tasks.push(
     function (cb) {
-      const data = processedData
+      const data = processedDataRecent
         .filter(o => o.type === 'distrito')
         .map(d => {
-          d.concelhos = d.concelhos.map(c => processedData.find(p => p.id === c))
+          d.concelhos = d.concelhos.map(c => processedDataRecent.find(p => p.id === c))
           return d
         })
       lib.storeResponse(
         data,
         'national.json',
-        'Data about taxis in Portugal for 2006 - 2016, aggregated by distrito and concelho'
+        'Data about taxis in Portugal from 2006 on, aggregated by distrito and concelho'
       )
       cb()
     })
@@ -77,11 +78,11 @@ function (err, results) {
     function (cb) {
       // AM Lisboa, AM Porto, RA Açores, RA Madeira
       const nutOfInterest = ['PT11A', 'PT17', 'PT200', 'PT300']
-      const data = processedData.filter(o => nutOfInterest.indexOf(o.id) !== -1)
+      const data = processedDataRecent.filter(o => nutOfInterest.indexOf(o.id) !== -1)
       lib.storeResponse(
         data,
         'nut3-featured.json',
-        'Data about taxis in Portugal for a selected number of NUT3'
+        'Data about taxis in Portugal from 2006 on, for a selected number of NUT3.'
       )
       cb()
     })
@@ -91,7 +92,7 @@ function (err, results) {
   tasks.push(
     function (cb) {
       fs.copy('./data/admin-areas.topojson', './export/admin-areas.topojson')
-      fs.writeFileSync('./export/admin-areas-data.topojson', JSON.stringify(lib.joinTopo(topo, processedData, 'id')))
+      fs.writeFileSync('./export/admin-areas-data.topojson', JSON.stringify(lib.joinTopo(topo, processedDataRecent, 'id')))
       cb()
     }
   )

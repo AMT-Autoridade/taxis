@@ -116,7 +116,8 @@ module.exports.generateAreas = function (concelhos) {
  * @param {Array} data - [{ id: 1401, indicator: '1', year: 2011, value: 61 }]
  */
 module.exports.addData = function (area, data) {
-  area.data = data
+  let areaWithData = Object.assign({}, area)
+  areaWithData.data = data
     .filter(o => area.concelhos.indexOf(o.id) !== -1)
     .reduce((a, b) => {
       let ind = b.indicator
@@ -130,7 +131,7 @@ module.exports.addData = function (area, data) {
       }
       return a
     }, {})
-  return area
+  return areaWithData
 }
 
 /**
