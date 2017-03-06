@@ -1,3 +1,4 @@
+const fs = require('fs-extra')
 const omit = require('lodash.omit')
 
 /**
@@ -111,7 +112,7 @@ module.exports.generateAreas = function (concelhos) {
  *
  * @name addData
  * @param {Object} area - An object with meta-data for the admin area.
- *    {"id":1,"name":"Aveiro","type":"distrito","concelhos":[101,102,103,104]}
+ *    {'id':1,'name':'Aveiro','type':'distrito','concelhos':[101,102,103,104]}
  * @param {Array} data - [{ id: 1401, indicator: '1', year: 2011, value: 61 }]
  */
 module.exports.addData = function (area, data) {
@@ -150,4 +151,29 @@ module.exports.joinTopo = function (topo, data, topoKey, dataKey = topoKey) {
     })
   })
   return topo
+}
+
+/**
+ * Prepare and store the response
+ *
+ * @name storeResponse
+ * @param {Array} data
+ * @param {String} fn - Filename to store the data as
+ * @param {String} description
+ * @returns {Object} The final response with meta and results
+ */
+module.exports.storeResponse = function (data, fn, description) {
+  const finalRes = {
+    'meta': {
+      'name': 'observatorio-taxis-data',
+      'description': description,
+      'source': {
+        'name': 'Autoridade da Mobilidade e dos Transportes',
+        'web': 'http://www.amt-autoridade.pt'
+      },
+      'license': 'CC-BY-4.0'
+    },
+    'results': data
+  }
+  fs.writeFileSync(`./export/${fn}`, JSON.stringify(finalRes))
 }

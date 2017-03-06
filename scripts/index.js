@@ -45,7 +45,12 @@ function (err, results) {
   // Generate a JSON file for each admin area type
   var tasks = lib.uniqueValues(areaMeta, 'type').map(type => {
     return function (cb) {
-      fs.writeFileSync(`./export/${type}.json`, JSON.stringify(processedData.filter(o => o.type === type)))
+      const data = processedData.filter(o => o.type === type)
+      lib.storeResponse(
+        data,
+        `${type}.json`,
+        `Data about taxis in Portugal from 1998 on, aggregated by ${type}`
+      )
       cb()
     }
   })
@@ -59,15 +64,25 @@ function (err, results) {
           d.concelhos = d.concelhos.map(c => processedData.find(p => p.id === c))
           return d
         })
-      fs.writeFileSync('./export/national.json', JSON.stringify(data))
+      lib.storeResponse(
+        data,
+        'national.json',
+        'Data about taxis in Portugal for 2006 - 2016, aggregated by distrito and concelho'
+      )
+      cb()
     })
 
   // Generate a JSON file with highlighted NUT3 areas, to be used on homepage
-  // AM Lisboa, AM Porto, RA Açores, RA Madeira
-  const nutOfInterest = ['PT11A', 'PT17', 'PT200', 'PT300']
   tasks.push(
     function (cb) {
-      fs.writeFileSync('./export/nut3-featured.json', JSON.stringify(processedData.filter(o => nutOfInterest.indexOf(o.id) !== -1)))
+      // AM Lisboa, AM Porto, RA Açores, RA Madeira
+      const nutOfInterest = ['PT11A', 'PT17', 'PT200', 'PT300']
+      const data = processedData.filter(o => nutOfInterest.indexOf(o.id) !== -1)
+      lib.storeResponse(
+        data,
+        'nut3-featured.json',
+        'Data about taxis in Portugal for a selected number of NUT3'
+      )
       cb()
     })
 
