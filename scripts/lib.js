@@ -1,3 +1,4 @@
+const fs = require('fs-extra')
 const omit = require('lodash.omit')
 
 /**
@@ -26,6 +27,33 @@ module.exports.prepRawData = function (data) {
     })
   })
   return finalData
+}
+
+/**
+ * Backfill null data with data from the next year that has
+ *
+ * @name backfillData
+ * @param {Array} data
+ * @example
+ * // returns [{ year: 2015, value: null, dico: 1401, indicator: '1' }, { year: 2016, value: 66, dico: 1401, indicator: '1' }]
+ * prepRawData([{ year: 2015, value: 66, dico: 1401, indicator: '1', backfill: 2016 }, { year: 2016, value: 66, dico: 1401, indicator: '1' }])
+ * @returns {Array} An array of objects. Each contains a unique record with data for one year, indicator, concelho
+ */
+module.exports.backfillData = function (data) {
+  return data.map(o => {
+    if (o.value === null) {
+      // Find the first available year with data
+      let firstAvailable = data
+        .filter(d => d.indicator === o.indicator && d.id === o.id && d.value !== null && d.year > o.year)
+        .find((e, i, a) => e.year === Math.min(...a.map(o => o.year)))
+      // In case there is no first available, the value will remain null
+      if (firstAvailable) {
+        o.value = firstAvailable.value
+        o.backfill = firstAvailable.year
+      }
+    }
+    return o
+  })
 }
 
 /**
@@ -84,23 +112,26 @@ module.exports.generateAreas = function (concelhos) {
  *
  * @name addData
  * @param {Object} area - An object with meta-data for the admin area.
- *    {"id":1,"name":"Aveiro","type":"distrito","concelhos":[101,102,103,104]}
+ *    {'id':1,'name':'Aveiro','type':'distrito','concelhos':[101,102,103,104]}
  * @param {Array} data - [{ id: 1401, indicator: '1', year: 2011, value: 61 }]
  */
 module.exports.addData = function (area, data) {
-  area.data = data
+  let areaWithData = Object.assign({}, area)
+  areaWithData.data = data
     .filter(o => area.concelhos.indexOf(o.id) !== -1)
     .reduce((a, b) => {
+      let ind = b.indicator
+      if (!a[ind]) a[ind] = []
       // Check if the accumulator already has an object for that year+indicator
-      const match = a.findIndex(o => o.indicator === b.indicator && o.year === b.year)
+      const match = a[ind].findIndex(o => o.year === b.year)
       if (match === -1) {
-        a.push(omit(b, ['id']))
+        a[ind].push(omit(b, ['id', 'indicator']))
       } else {
-        a[match].value += b.value
+        a[ind][match].value += b.value
       }
       return a
-    }, [])
-  return area
+    }, {})
+  return areaWithData
 }
 
 /**
@@ -121,4 +152,29 @@ module.exports.joinTopo = function (topo, data, topoKey, dataKey = topoKey) {
     })
   })
   return topo
+}
+
+/**
+ * Prepare and store the response
+ *
+ * @name storeResponse
+ * @param {Array} data
+ * @param {String} fn - Filename to store the data as
+ * @param {String} description
+ * @returns {Object} The final response with meta and results
+ */
+module.exports.storeResponse = function (data, fn, description) {
+  const finalRes = {
+    'meta': {
+      'name': 'observatorio-taxis-data',
+      'description': description,
+      'source': {
+        'name': 'Autoridade da Mobilidade e dos Transportes',
+        'web': 'http://www.amt-autoridade.pt'
+      },
+      'license': 'CC-BY-4.0'
+    },
+    'results': data
+  }
+  fs.writeFileSync(`./export/${fn}`, JSON.stringify(finalRes))
 }
