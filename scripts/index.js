@@ -60,7 +60,7 @@ function (err, results) {
   tasks.push(
     function (cb) {
       const data = processedDataRecent
-        .filter(o => o.type === 'distrito')
+        .filter(o => o.type === 'nut3')
         .map(d => {
           d.concelhos = d.concelhos.map(c => processedDataRecent.find(p => p.id === c))
           return d
@@ -68,7 +68,7 @@ function (err, results) {
       lib.storeResponse(
         data,
         'national.json',
-        'Data about taxis in Portugal from 2006 on, aggregated by distrito and concelho'
+        'Data about taxis in Portugal from 2006 on, aggregated by NUT3 and concelho'
       )
       cb()
     })
