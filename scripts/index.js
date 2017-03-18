@@ -5,26 +5,26 @@ const lib = require('./lib.js')
 
 async.parallel([
   function (cb) {
-    // Parse meta-data about the concelhos
-    // Returns an array with all admin areas and their meta-data
+    // Parse area data about the concelhos
+    // Returns an array with all admin areas
     parse(fs.readFileSync('./data/concelhos.csv'), {columns: true}, function (err, output) {
       let areas = lib.generateAreas(output)
       cb(err, areas)
     })
   },
   function (cb) {
-    // Parse source data with taxis by concelho
+    // Parse time series data with taxis by concelho
     // Returns an array of records for a unique concelho, year, indicator
     parse(fs.readFileSync('./data/taxis.csv'), {columns: true}, function (err, output) {
-      let data = lib.prepRawData(output)
+      let data = lib.prepTsData(output)
       cb(err, data)
     })
   },
   function (cb) {
-    // Parse population estimates by concelho
+    // Parse time series data with population estimates by concelho
     // Returns an array of records for each concelho + year
     parse(fs.readFileSync('./data/population.csv'), {columns: true}, function (err, output) {
-      let data = lib.prepRawData(output)
+      let data = lib.prepTsData(output)
       cb(err, data)
     })
   }

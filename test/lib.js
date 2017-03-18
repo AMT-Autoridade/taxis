@@ -24,7 +24,7 @@ test('Generate separate objects for unique concelho, year, indicator combination
       value: 66
     }
   ]
-  t.deepEqual(lib.prepRawData(input), expected)
+  t.deepEqual(lib.prepTsData(input), expected)
 })
 
 test('Return 0 as 0', t => {
@@ -43,7 +43,7 @@ test('Return 0 as 0', t => {
       value: 0
     }
   ]
-  t.deepEqual(lib.prepRawData(input), expected)
+  t.deepEqual(lib.prepTsData(input), expected)
 })
 
 test('Return empty strings as null', t => {
@@ -62,7 +62,26 @@ test('Return empty strings as null', t => {
       value: null
     }
   ]
-  t.deepEqual(lib.prepRawData(input), expected)
+  t.deepEqual(lib.prepTsData(input), expected)
+})
+
+test('Return non-numeric as null', t => {
+  let input = [
+    {
+      dico: '1401',
+      indicator: '1',
+      '1999': 'nd'
+    }
+  ]
+  let expected = [
+    {
+      id: 1401,
+      indicator: '1',
+      year: 1999,
+      value: null
+    }
+  ]
+  t.deepEqual(lib.prepTsData(input), expected)
 })
 
 test('Don\'t return anything if there is no year', t => {
@@ -74,7 +93,7 @@ test('Don\'t return anything if there is no year', t => {
     }
   ]
   let expected = []
-  t.deepEqual(lib.prepRawData(input), expected)
+  t.deepEqual(lib.prepTsData(input), expected)
 })
 
 test('Backfill null values', t => {

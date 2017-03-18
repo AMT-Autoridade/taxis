@@ -2,16 +2,17 @@ const fs = require('fs-extra')
 const omit = require('lodash.omit')
 
 /**
- * Prepare the raw data parsed from the CSV
+ * Parse objects parsed from CSV with data for multiple years and generate 
+ * granular records for each year, indicator, concelho combination.
  *
- * @name prepRawData
+ * @name prepTsData
  * @param {Array} data
  * @example
  * // returns [{ year: 2015, value: 61, dico: 1401, indicator: '1' }, { year: 2016, value: 66, dico: 1401, indicator: '1' }]
  * prepRawData([{ '2015': '61', '2016': '66', dico: '1401', indicator: '1' }])
- * @returns {Array} An array of objects. Each contains a unique record with data for one year, indicator, concelho
+ * @returns {Array} An array of objects.
  */
-module.exports.prepRawData = function (data) {
+module.exports.prepTsData = function (data) {
   let finalData = []
   data.map(o => {
     Object.keys(o).map(k => {
