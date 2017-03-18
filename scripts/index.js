@@ -73,20 +73,6 @@ function (err, results) {
       cb()
     })
 
-  // Generate a JSON file with highlighted NUT3 areas, to be used on homepage
-  tasks.push(
-    function (cb) {
-      // AM Lisboa, AM Porto, RA Açores, RA Madeira
-      const nutOfInterest = ['PT11A', 'PT17', 'PT200', 'PT300']
-      const data = processedDataRecent.filter(o => nutOfInterest.indexOf(o.id) !== -1)
-      lib.storeResponse(
-        data,
-        'nut3-featured.json',
-        'Data about taxis in Portugal from 2006 on, for a selected number of NUT3.'
-      )
-      cb()
-    })
-
   // Generate a TopoJSON file with only geometries, and another one with data for all areas
   const topo = JSON.parse(fs.readFileSync('./data/admin-areas.topojson'))
   tasks.push(
