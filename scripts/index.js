@@ -60,7 +60,7 @@ function (err, results) {
   tasks.push(
     function (cb) {
       const data = processedDataRecent
-        .filter(o => o.type === 'distrito')
+        .filter(o => o.type === 'nut3')
         .map(d => {
           d.concelhos = d.concelhos.map(c => processedDataRecent.find(p => p.id === c))
           return d
@@ -68,21 +68,7 @@ function (err, results) {
       lib.storeResponse(
         data,
         'national.json',
-        'Data about taxis in Portugal from 2006 on, aggregated by distrito and concelho'
-      )
-      cb()
-    })
-
-  // Generate a JSON file with highlighted NUT3 areas, to be used on homepage
-  tasks.push(
-    function (cb) {
-      // AM Lisboa, AM Porto, RA Açores, RA Madeira
-      const nutOfInterest = ['PT11A', 'PT17', 'PT200', 'PT300']
-      const data = processedDataRecent.filter(o => nutOfInterest.indexOf(o.id) !== -1)
-      lib.storeResponse(
-        data,
-        'nut3-featured.json',
-        'Data about taxis in Portugal from 2006 on, for a selected number of NUT3.'
+        'Data about taxis in Portugal from 2006 on, aggregated by NUT3 and concelho'
       )
       cb()
     })
