@@ -278,8 +278,8 @@ test('Add meta data to a concelho', t => {
     'data': {}
   }
   let inputMeta = [
-    { id: 1400, contingente: 'total', estacionamento: [ 'livre' ] },
-    { id: 1401, contingente: 'total', estacionamento: [ 'meio' ] }
+    { concelho: 1400, contingente: 'total', estacionamento: [ 'livre' ] },
+    { concelho: 1401, contingente: 'total', estacionamento: [ 'meio' ] }
   ]
   let expected = {
     'id': 1401,

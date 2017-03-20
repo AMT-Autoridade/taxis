@@ -141,7 +141,7 @@ module.exports.generateAreas = function (concelhos) {
         'name': childConcelhos[0][`${type}_name`],
         'type': type,
         'concelhos': childConcelhos.map(o => parseInt(o.concelho) || o.concelho),
-        'data': []
+        'data': {}
       })
     })
   })
@@ -159,10 +159,10 @@ module.exports.generateAreas = function (concelhos) {
 module.exports.addMetaData = function (area, data) {
   // check if there is any meta-data for this area
   let match = data
-    .find(o => o.id === area.id)
+    .find(o => o.concelho.toString() === area.id.toString())
   if (match) {
     // add all the meta-data of the match, except for the concelho id
-    Object.keys(omit(match, 'id')).map(k => {
+    Object.keys(omit(match, 'concelho')).map(k => {
         area.data[k] = match[k]
       }
     )
@@ -181,7 +181,7 @@ module.exports.addMetaData = function (area, data) {
  */
 module.exports.addTsData = function (area, data) {
   let areaWithData = Object.assign({}, area)
-  areaWithData.data = data
+  let aggregatedData = data
     .filter(o => area.concelhos.indexOf(o.id) !== -1)
     .reduce((a, b) => {
       let ind = b.indicator
@@ -195,6 +195,8 @@ module.exports.addTsData = function (area, data) {
       }
       return a
     }, {})
+  // combine existing metadata with the newly aggregated data
+  areaWithData.data = Object.assign({}, areaWithData.data, aggregatedData)
   return areaWithData
 }
 

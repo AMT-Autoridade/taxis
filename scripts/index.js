@@ -43,15 +43,15 @@ function (err, results) {
   const areas = results[0]
 
   // Combine the admin areas with the meta data (results[1])
-  areas.map(area => lib.addMetaData(area, results[1]))
+  const areasWithMeta = areas.map(area => lib.addMetaData(area, results[1]))
 
   // Merge the Time Series data: taxi data (results[2]) and the population 
   // estimates (results[3]) and back-fill the nulls
   const backfilledData = lib.backfillData([].concat(results[2], results[3]))
 
   // Combine the admin areas with the Time Series data
-  const processedDataFull = areas.map(area => lib.addTsData(area, backfilledData))
-  const processedDataRecent = areas.map(area => lib.addTsData(area, backfilledData.filter(d => d.year >= 2006)))
+  const processedDataFull = areasWithMeta.map(area => lib.addTsData(area, backfilledData))
+  const processedDataRecent = areasWithMeta.map(area => lib.addTsData(area, backfilledData.filter(d => d.year >= 2006)))
 
   // Generate a JSON file for each admin area type
   var tasks = lib.uniqueValues(areas, 'type').map(type => {
