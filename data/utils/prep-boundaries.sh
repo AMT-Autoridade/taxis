@@ -7,6 +7,8 @@
 #
 # The source data can be downloaded in .rar format from http://www.dgterritorio.pt/cartografia_e_geodesia/cartografia/carta_administrativa_oficial_de_portugal__caop_/caop__download_/
 # and should be placed (uncompressed) in the source folder.
+# From the website select the version you want and be sure to download
+# all Shapefiles for "Área Administrativa".
 #
 # Requires
 # - ogr
@@ -183,7 +185,7 @@ echo "Converting to TopoJSON..."
 $cmd_geo2topo $TMP_DIR/$BASE_NAME.geojson > $TMP_DIR/$BASE_NAME.topojson
 
 echo "Generating the final simplified TopoJSON..."
-$cmd_toposimplify -P 0.02 -f $TMP_DIR/all_areas.topojson > $EXP_DIR/$BASE_NAME-P0_02.topojson
+$cmd_toposimplify -P 0.02 -f $TMP_DIR/$BASE_NAME.topojson > $EXP_DIR/$BASE_NAME-P0_02.topojson
 
 echo "Done. Enjoy!"
 rm -r $TMP_DIR
