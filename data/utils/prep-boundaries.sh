@@ -183,7 +183,7 @@ echo "Converting to TopoJSON..."
 $cmd_geo2topo $TMP_DIR/$BASE_NAME.geojson > $TMP_DIR/$BASE_NAME.topojson
 
 echo "Generating the final simplified TopoJSON..."
-$cmd_toposimplify -P 0.02 -f $TMP_DIR/all_areas.topojson > $EXP_DIR/$BASE_NAME-P0_02.topojson
+$cmd_toposimplify -P 0.02 -f $TMP_DIR/$BASE_NAME.topojson > $EXP_DIR/$BASE_NAME-P0_02.topojson
 
 echo "Done. Enjoy!"
 rm -r $TMP_DIR
