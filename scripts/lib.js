@@ -1,4 +1,5 @@
 const fs = require('fs-extra')
+const kebab = require('lodash.kebabcase')
 const omit = require('lodash.omit')
 
 /**
@@ -140,6 +141,7 @@ module.exports.generateAreas = function (concelhos) {
         'id': parseInt(area) || area,
         'name': childConcelhos[0][`${type}_name`],
         'type': type,
+        'slug': kebab(childConcelhos[0][`${type}_name`]),
         'concelhos': childConcelhos.map(o => parseInt(o.concelho) || o.concelho),
         'data': {}
       })
