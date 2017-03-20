@@ -2,14 +2,14 @@ const fs = require('fs-extra')
 const omit = require('lodash.omit')
 
 /**
- * Parse objects parsed from CSV with data for multiple years and generate 
+ * Parse objects parsed from CSV with data for multiple years and generate
  * granular records for each year, indicator, concelho combination.
  *
  * @name prepTsData
  * @param {Array} data
  * @example
  * // returns [{ year: 2015, value: 61, dico: 1401, indicator: '1' }, { year: 2016, value: 66, dico: 1401, indicator: '1' }]
- * prepRawData([{ '2015': '61', '2016': '66', dico: '1401', indicator: '1' }])
+ * prepTsData([{ '2015': '61', '2016': '66', dico: '1401', indicator: '1' }])
  * @returns {Array} An array of objects.
  */
 module.exports.prepTsData = function (data) {
@@ -28,6 +28,47 @@ module.exports.prepTsData = function (data) {
     })
   })
   return finalData
+}
+
+/**
+ * The parsed CSV may contain fields with multiple values (separated by ';')
+ * Check which of them should be parsed as such, returning their key.
+ *
+ * @name getMultiValueFields
+ * @param {Array} data
+ * @example
+ * // returns [ 'bar' ]
+ * getMultiValueFields([{ 'foo': 'cha', 'bar': 'cafe' }, { 'foo': 'cha', 'bar': 'cafe;laranjada' }])
+ * @returns {Array} Return keys that should be parsed as array
+ */
+module.exports.getMultiValueFields = function (data) {
+  let multiValueFields = []
+  Object.keys(data[0]).map(k => {
+    if (data.findIndex(o => o[k].includes(';')) > -1) {
+      multiValueFields.push(k)
+    }
+  })
+  return multiValueFields
+}
+
+/**
+ * Parse multi value fields into proper arrays
+ *
+ * @name parseMultiValueField
+ * @param {Array} data
+ * @param {Array} keys - The keys of the properties that should be parsed as arrays
+ * @example
+ * // returns [{ 'foo': 'cha', 'bar': ['cafe'] }, { 'foo': 'cha', 'bar': ['cafe','laranjada'] }]
+ * parseMultiValueField([{ 'foo': 'cha', 'bar': 'cafe' }, { 'foo': 'cha', 'bar': 'cafe;laranjada' }])
+ * @returns {Array}
+ */
+module.exports.parseMultiValueField = function (data, cols) {
+  return data.map(o => {
+    for (let  c of cols) {
+      o[c] = o[c].split(';')
+    }
+    return o
+  })
 }
 
 /**
@@ -108,15 +149,37 @@ module.exports.generateAreas = function (concelhos) {
 }
 
 /**
- * Add data to an administrative area.
+ * Add meta-data to an administrative area.
+ *
+ * @name addMetaData
+ * @param {Object} area - An object with the admin area.
+ *    { id:1, data: {} }
+ * @param {Array} data - [{ id: 1401, estacionamento: 'livre' }]
+ */
+module.exports.addMetaData = function (area, data) {
+  // check if there is any meta-data for this area
+  let match = data
+    .find(o => o.id === area.id)
+  if (match) {
+    // add all the meta-data of the match, except for the concelho id
+    Object.keys(omit(match, 'id')).map(k => {
+        area.data[k] = match[k]
+      }
+    )
+  }
+  return area
+}
+
+/**
+ * Add Time Series data to an administrative area.
  * This function aggregates the data for all concelhos that belong to the area.
  *
- * @name addData
+ * @name addTsData
  * @param {Object} area - An object with meta-data for the admin area.
  *    {'id':1,'name':'Aveiro','type':'distrito','concelhos':[101,102,103,104]}
  * @param {Array} data - [{ id: 1401, indicator: '1', year: 2011, value: 61 }]
  */
-module.exports.addData = function (area, data) {
+module.exports.addTsData = function (area, data) {
   let areaWithData = Object.assign({}, area)
   areaWithData.data = data
     .filter(o => area.concelhos.indexOf(o.id) !== -1)

@@ -13,6 +13,14 @@ async.parallel([
     })
   },
   function (cb) {
+    // Parse meta-data for each concelho
+    parse(fs.readFileSync('./data/concelhos-metadata.csv'), {columns: true}, function (err, output) {
+      // Parse any column that contains an array
+      let data = lib.parseMultiValueField(output, lib.getMultiValueFields(output))
+      cb(err, data)
+    })
+  },
+  function (cb) {
     // Parse time series data with taxis by concelho
     // Returns an array of records for a unique concelho, year, indicator
     parse(fs.readFileSync('./data/taxis.csv'), {columns: true}, function (err, output) {
@@ -32,19 +40,21 @@ async.parallel([
 function (err, results) {
   if (err) { console.log(err.message) }
 
-  const areaMeta = results[0]
-  // Merge the raw taxi data (results[1]) and the population estimates (results[2])
-  const rawData = [].concat(results[1], results[2])
+  const areas = results[0]
 
-  // Back-fill those nulls
-  const backfilledData = lib.backfillData(rawData)
+  // Combine the admin areas with the meta data (results[1])
+  areas.map(area => lib.addMetaData(area, results[1]))
 
-  // Combine the area meta-data with the raw data
-  const processedDataFull = areaMeta.map(area => lib.addData(area, backfilledData))
-  const processedDataRecent = areaMeta.map(area => lib.addData(area, backfilledData.filter(d => d.year >= 2006)))
+  // Merge the Time Series data: taxi data (results[2]) and the population 
+  // estimates (results[3]) and back-fill the nulls
+  const backfilledData = lib.backfillData([].concat(results[2], results[3]))
+
+  // Combine the admin areas with the Time Series data
+  const processedDataFull = areas.map(area => lib.addTsData(area, backfilledData))
+  const processedDataRecent = areas.map(area => lib.addTsData(area, backfilledData.filter(d => d.year >= 2006)))
 
   // Generate a JSON file for each admin area type
-  var tasks = lib.uniqueValues(areaMeta, 'type').map(type => {
+  var tasks = lib.uniqueValues(areas, 'type').map(type => {
     return function (cb) {
       const data = processedDataFull.filter(o => o.type === type)
       lib.storeResponse(

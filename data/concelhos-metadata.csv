@@ -1,0 +1,309 @@
+concelho,contingente,estacionamento
+101,infra concelho,fixo
+102,infra concelho,fixo
+103,infra concelho,fixo
+104,infra concelho,fixo;condicionado;livre
+105,infra concelho,condicionado
+106,infra concelho,fixo
+107,infra concelho,fixo;condicionado
+108,infra concelho,fixo
+109,infra concelho,fixo;condicionado
+110,infra concelho,fixo
+111,infra concelho,fixo
+112,concelho,fixo
+113,infra concelho,fixo
+114,infra concelho,fixo;escala
+115,infra concelho,condicionado
+116,concelho,condicionado
+117,infra concelho,fixo
+118,concelho,fixo 
+119,concelho,condicionado
+201,infra concelho,fixo
+202,infra concelho,fixo
+203,infra concelho,condicionado
+204,concelho,fixo
+205,infra concelho,condicionado
+206,concelho,fixo
+207,concelho,fixo
+208,infra concelho,fixo
+209,infra concelho,condicionado
+210,concelho,fixo
+211,concelho,livre
+212,concelho,fixo
+213,infra concelho,condicionado
+214,infra concelho,fixo 
+301,infra concelho,fixo;condicionado
+302,concelho,fixo;condicionado
+303,infra concelho,fixo;condicionado
+304,infra concelho,fixo;condicionado
+305,infra concelho,fixo
+306,infra concelho,fixo;condicionado
+307,infra concelho,fixo;condicionado
+308,infra concelho,fixo;condicionado
+309,infra concelho,fixo
+310,infra concelho,fixo;livre
+311,infra concelho,fixo;condicionado
+312,concelho,fixo;condicionado
+313,infra concelho,fixo;condicionado
+314,infra concelho,fixo;condicionado
+401,infra concelho,condicionado;escala
+402,infra concelho,fixo;condicionado
+403,infra concelho,fixo;livre
+404,infra concelho,fixo;livre
+405,infra concelho,fixo;condicionado
+406,infra concelho,fixo
+407,infra concelho,fixo;condicionado
+408,infra concelho,fixo;condicionado
+409,infra concelho,fixo;livre
+410,infra concelho,fixo;livre
+411,infra concelho,condicionado;livre
+412,concelho,fixo
+501,infra concelho,fixo
+502,infra concelho,fixo;condicionado
+503,infra concelho,fixo;condicionado
+504,infra concelho,fixo;condicionado
+505,infra concelho,fixo;livre
+506,infra concelho,fixo
+507,infra concelho,fixo
+508,infra concelho,fixo
+509,infra concelho,fixo;condicionado
+510,infra concelho,fixo
+511,infra concelho,fixo;condicionado
+601,infra concelho,fixo
+602,infra concelho,fixo;condicionado
+603,infra concelho,fixo;condicionado
+604,infra concelho,fixo
+605,,fixo;condicionado
+606,infra concelho,fixo
+607,infra concelho,fixo
+608,infra concelho,fixo
+609,infra concelho,fixo
+610,infra concelho,fixo
+611,infra concelho,fixo;condicionado
+612,infra concelho,fixo
+613,infra concelho,fixo
+614,concelho,fixo
+615,infra concelho,fixo;condicionado
+616,infra concelho,fixo;condicionado
+617,infra concelho,fixo
+701,concelho,condicionado
+702,infra concelho,fixo;condicionado
+703,infra concelho,fixo;condicionado;escala;livre
+704,concelho,fixo;condicionado
+705,infra concelho,condicionado
+706,infra concelho,fixo
+707,infra concelho,fixo;condicionado
+708,infra concelho,condicionado
+709,infra concelho,fixo;livre
+710,concelho,fixo
+711,concelho,fixo;condicionado
+712,infra concelho,fixo;condicionado
+713,infra concelho,fixo
+714,infra concelho,fixo;condicionado
+801,concelho,condicionado
+802,infra concelho,condicionado
+803,infra concelho,fixo;condicionado;livre
+804,infra concelho,condicionado
+805,infra concelho,condicionado
+806,concelho,livre
+807,infra concelho,condicionado
+808,concelho,condicionado
+809,infra concelho,fixo
+810,concelho,condicionado
+811,concelho,livre
+812,concelho,fixo
+813,infra concelho,fixo;condicionado
+814,concelho,fixo;condicionado;escala;livre
+815,infra concelho,fixo;livre
+816,concelho,condicionado
+901,infra concelho,condicionado;livre
+902,infra concelho,livre
+903,infra concelho,fixo;condicionado
+904,infra concelho,fixo
+905,infra concelho,fixo;condicionado
+906,infra concelho,fixo
+907,infra concelho,fixo;condicionado
+908,concelho,fixo
+909,infra concelho,fixo;condicionado
+910,infra concelho,fixo;condicionado
+911,infra concelho,fixo;livre
+912,concelho,fixo
+913,infra concelho,fixo
+914,infra concelho,fixo
+1001,infra concelho,condicionado
+1002,infra concelho,fixo
+1003,infra concelho,fixo
+1004,infra concelho,fixo
+1005,infra concelho,fixo
+1006,infra concelho,fixo;condicionado
+1007,concelho,fixo
+1008,infra concelho,fixo 
+1009,infra concelho,fixo;condicionado
+1010,infra concelho,fixo;condicionado
+1011,infra concelho,fixo;livre
+1012,concelho,fixo
+1013,infra concelho,fixo;condicionado
+1014,infra concelho,fixo;condicionado;livre
+1015,infra concelho,fixo;condicionado
+1016,infra concelho,fixo;livre
+1101,infra concelho,fixo
+1102,infra concelho,fixo
+1103,infra concelho,fixo
+1104,infra concelho,fixo
+1105,concelho,condicionado
+1106,concelho,condicionado;livre
+1107,concelho,livre
+1108,infra concelho,condicionado;livre
+1109,infra concelho,fixo;condicionado
+1110,concelho,condicionado
+1111,infra concelho,condicionado
+1112,concelho,fixo
+1113,infra concelho,fixo;condicionado
+1114,infra concelho,fixo;condicionado;livre
+1115,concelho,fixo
+1116,concelho,condicionado
+1201,infra concelho,fixo
+1202,infra concelho,fixo
+1203,infra concelho,fixo
+1204,concelho,fixo
+1205,infra concelho,fixo
+1206,infra concelho,fixo;livre
+1207,infra concelho,fixo;condicionado
+1208,infra concelho,fixo
+1209,infra concelho,fixo
+1210,infra concelho,fixo
+1211,infra concelho,fixo;livre
+1212,infra concelho,fixo
+1213,infra concelho,fixo;condicionado
+1214,infra concelho,fixo
+1215,infra concelho,condicionado;livre
+1301,infra concelho,fixo;condicionado
+1302,infra concelho,fixo;condicionado;livre
+1303,infra concelho,fixo
+1304,infra concelho,fixo;condicionado
+1305,infra concelho,fixo
+1306,infra concelho,fixo;escala
+1307,infra concelho,fixo;condicionado
+1308,infra concelho,condicionado
+1309,infra concelho,fixo;condicionado
+1310,infra concelho,fixo;condicionado
+1311,infra concelho,fixo;condicionado
+1312,concelho,condicionado
+1313,infra concelho,fixo;condicionado
+1314,concelho,fixo;condicionado
+1315,infra concelho,condicionado
+1316,infra concelho,fixo;condicionado
+1317,infra concelho,condicionado;escala;livre
+1318,infra concelho,fixo;condicionado
+1401,infra concelho,fixo;condicionado
+1402,infra concelho,fixo
+1403,concelho,fixo;condicionado;livre
+1404,concelho,fixo
+1405,infra concelho,fixo;condicionado;livre
+1406,infra concelho,fixo
+1407,infra concelho,fixo;condicionado;livre
+1408,infra concelho,condicionado
+1409,infra concelho,escala
+1410,infra concelho,condicionado
+1411,infra concelho,condicionado;livre
+1412,infra concelho,fixo;condicionado;escala;livre
+1413,infra concelho,fixo
+1414,infra concelho,fixo
+1415,infra concelho,fixo;livre
+1416,infra concelho,fixo;condicionado
+1417,infra concelho,fixo;condicionado
+1418,infra concelho,fixo;condicionado;escala
+1419,infra concelho,fixo
+1420,infra concelho,fixo;condicionado
+1421,infra concelho,fixo;condicionado
+1501,concelho,condicionado
+1502,concelho,fixo;condicionado
+1503,concelho,condicionado
+1504,concelho,condicionado
+1505,concelho,fixo
+1506,infra concelho,fixo;condicionado
+1507,concelho,fixo
+1508,infra concelho,fixo
+1509,infra concelho,fixo;condicionado
+1510,concelho,condicionado
+1511,infra concelho,fixo;condicionado
+1512,infra concelho,condicionado
+1513,infra concelho,fixo
+1601,infra concelho,condicionado
+1602,infra concelho,fixo
+1603,infra concelho,fixo;condicionado
+1604,infra concelho,fixo;condicionado
+1605,infra concelho,fixo;condicionado
+1606,infra concelho,fixo;condicionado
+1607,concelho,livre
+1608,infra concelho,fixo;condicionado
+1609,infra concelho,fixo;condicionado
+1610,infra concelho,fixo
+1701,infra concelho,fixo
+1702,concelho,fixo
+1703,concelho,fixo
+1704,infra concelho,fixo
+1705,infra concelho,fixo;condicionado
+1706,infra concelho,fixo
+1707,infra concelho,fixo;livre
+1708,infra concelho,fixo;condicionado
+1709,concelho,fixo
+1710,infra concelho,fixo
+1711,infra concelho,fixo
+1712,infra concelho,fixo
+1713,infra concelho,fixo
+1714,infra concelho,fixo;condicionado
+1801,,livre
+1802,infra concelho,fixo
+1803,infra concelho,fixo
+1804,infra concelho,condicionado;livre
+1805,infra concelho,fixo
+1806,infra concelho,fixo;condicionado
+1807,infra concelho,fixo
+1808,concelho,livre
+1809,infra concelho,fixo
+1810,infra concelho,fixo;escala
+1811,infra concelho,fixo;livre
+1812,infra concelho,condicionado;livre
+1813,infra concelho,fixo
+1814,infra concelho,fixo
+1815,infra concelho,fixo
+1816,infra concelho,fixo;escala
+1817,infra concelho,fixo
+1818,infra concelho,fixo
+1819,infra concelho,fixo
+1820,infra concelho,fixo;escala
+1821,infra concelho,fixo;condicionado
+1822,concelho,fixo
+1823,infra concelho,fixo;condicionado
+1824,infra concelho,condicionado;livre
+3101,concelho,condicionado
+3102,infra concelho,fixo;condicionado
+3103,concelho,condicionado
+3104,infra concelho,fixo
+3105,infra concelho,fixo
+3106,infra concelho,fixo
+3201,concelho,fixo
+3107,infra concelho,condicionado
+3108,infra concelho,condicionado;escala
+3109,,fixo
+3110,infra concelho,fixo
+4201,infra concelho,
+4202,infra concelho,fixo
+4203,concelho,fixo;condicionado
+4204,infra concelho,fixo;livre
+4205,infra concelho,fixo;livre
+4101,concelho,fixo;condicionado
+4206,concelho,fixo
+4901,,
+4801,infra concelho,fixo;condicionado
+4802,concelho,fixo;livre
+4301,concelho,condicionado
+4501,infra concelho,fixo;condicionado
+4701,concelho,livre
+4601,concelho,fixo;livre
+4602,concelho,condicionado;livre
+4302,infra concelho,fixo;livre
+4401,infra concelho,fixo
+4603,infra concelho,fixo
+4502,infra concelho,fixo;condicionado
