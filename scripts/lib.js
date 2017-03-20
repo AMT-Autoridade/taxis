@@ -159,10 +159,10 @@ module.exports.generateAreas = function (concelhos) {
 module.exports.addMetaData = function (area, data) {
   // check if there is any meta-data for this area
   let match = data
-    .find(o => o.concelho.toString() === area.id.toString())
+    .find(o => o.id.toString() === area.id.toString())
   if (match) {
-    // add all the meta-data of the match, except for the concelho id
-    Object.keys(omit(match, 'concelho')).map(k => {
+    // add all the meta-data of the match, except for the area id
+    Object.keys(omit(match, 'id')).map(k => {
         area.data[k] = match[k]
       }
     )

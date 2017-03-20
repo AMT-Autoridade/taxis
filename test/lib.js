@@ -272,14 +272,14 @@ test('Don\'t return anything if there is no year', t => {
   t.deepEqual(lib.uniqueValues(input, 'name'), expected)
 })
 
-test('Add meta data to a concelho', t => {
+test('Add meta data to an admin area', t => {
   let inputArea = {
     'id': 1401,
     'data': {}
   }
   let inputMeta = [
-    { concelho: 1400, contingente: 'total', estacionamento: [ 'livre' ] },
-    { concelho: 1401, contingente: 'total', estacionamento: [ 'meio' ] }
+    { id: 1400, contingente: 'total', estacionamento: [ 'livre' ] },
+    { id: 1401, contingente: 'total', estacionamento: [ 'meio' ] }
   ]
   let expected = {
     'id': 1401,
