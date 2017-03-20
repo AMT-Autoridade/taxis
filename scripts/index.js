@@ -1,5 +1,6 @@
 const async = require('async')
 const fs = require('fs-extra')
+const omit = require('lodash.omit')
 const parse = require('csv-parse')
 const lib = require('./lib.js')
 
@@ -79,6 +80,26 @@ function (err, results) {
         data,
         'national.json',
         'Data about taxis in Portugal from 2006 on, aggregated by NUT3 and concelho'
+      )
+      cb()
+    })
+
+  // Generate a a light-weight JSON file with the hierarchy of admin areas for the menu
+  tasks.push(
+    function (cb) {
+      const data = processedDataRecent
+        .filter(o => o.type === 'nut3')
+        .map(d => {
+          d.concelhos = d.concelhos.map(c => {
+            let match = processedDataRecent.find(p => p.id === c)
+            return omit(match, ['type', 'concelhos', 'data'])
+          })
+          return omit(d, ['type', 'data'])
+        })
+      lib.storeResponse(
+        data,
+        'national-menu.json',
+        'The NUT3 areas with their concelhos'
       )
       cb()
     })
