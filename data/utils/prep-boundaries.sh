@@ -7,6 +7,8 @@
 #
 # The source data can be downloaded in .rar format from http://www.dgterritorio.pt/cartografia_e_geodesia/cartografia/carta_administrativa_oficial_de_portugal__caop_/caop__download_/
 # and should be placed (uncompressed) in the source folder.
+# From the website select the version you want and be sure to download
+# all Shapefiles for "Área Administrativa".
 #
 # Requires
 # - ogr
