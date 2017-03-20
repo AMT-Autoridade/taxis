@@ -64,7 +64,7 @@ module.exports.getMultiValueFields = function (data) {
  */
 module.exports.parseMultiValueField = function (data, cols) {
   return data.map(o => {
-    for (let  c of cols) {
+    for (let c of cols) {
       o[c] = o[c].split(';')
     }
     return o
@@ -163,9 +163,8 @@ module.exports.addMetaData = function (area, data) {
   if (match) {
     // add all the meta-data of the match, except for the area id
     Object.keys(omit(match, 'id')).map(k => {
-        area.data[k] = match[k]
-      }
-    )
+      area.data[k] = match[k]
+    })
   }
   return area
 }

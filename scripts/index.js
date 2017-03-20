@@ -14,7 +14,7 @@ async.parallel([
   },
   function (cb) {
     // Parse meta-data for each concelho
-    parse(fs.readFileSync('./data/concelhos-metadata.csv'), {columns: true}, function (err, output) {
+    parse(fs.readFileSync('./data/area-metadata.csv'), {columns: true}, function (err, output) {
       // Parse any column that contains an array
       let data = lib.parseMultiValueField(output, lib.getMultiValueFields(output))
       cb(err, data)
@@ -45,7 +45,7 @@ function (err, results) {
   // Combine the admin areas with the meta data (results[1])
   const areasWithMeta = areas.map(area => lib.addMetaData(area, results[1]))
 
-  // Merge the Time Series data: taxi data (results[2]) and the population 
+  // Merge the Time Series data: taxi data (results[2]) and the population
   // estimates (results[3]) and back-fill the nulls
   const backfilledData = lib.backfillData([].concat(results[2], results[3]))
 
