@@ -120,10 +120,11 @@ module.exports.uniqueValues = function (array, key) {
  * Generate base meta-data for the different admin areas
  *
  * @name generateAreas
- * @param {Array} concelhos
+ * @param {Array} concelhos - An array with concelhos and their parent areas
+ * @param {Array} abbreviations - An array with abbreviations for the admin areas
  * @returns {Array} An array of objects with meta-data for each administrative area
  */
-module.exports.generateAreas = function (concelhos) {
+module.exports.generateAreas = function (concelhos, abbreviations) {
   let finalAreas = []
 
   // Generate meta-data for other areas types as well
@@ -137,11 +138,15 @@ module.exports.generateAreas = function (concelhos) {
       let childConcelhos = concelhos
         .filter(c => c[type] === area)
 
+      let name = childConcelhos[0][`${type}_name`]
+      let abbr = abbreviations.find(o => o.id.toString() === area.toString())
+
       finalAreas.push({
         'id': parseInt(area) || area,
-        'name': childConcelhos[0][`${type}_name`],
+        'name': name,
         'type': type,
         'slug': kebab(childConcelhos[0][`${type}_name`]),
+        'display': abbr ? abbr.abbreviation : name,
         'concelhos': childConcelhos.map(o => parseInt(o.concelho) || o.concelho),
         'data': {}
       })
