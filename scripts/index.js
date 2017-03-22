@@ -96,7 +96,7 @@ function (err, results) {
         .filter(o => o.type === 'nut3')
         .map(d => {
           d.concelhos = d.concelhos.map(c => {
-            let match = processedDataRecent.find(p => p.id === c)
+            let match = processedDataRecent.find(p => p.id === c.id)
             return omit(match, ['type', 'concelhos', 'data'])
           })
           return omit(d, ['type', 'data'])
