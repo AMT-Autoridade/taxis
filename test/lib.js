@@ -24,7 +24,7 @@ test('Generate separate objects for unique concelho, year, indicator combination
       value: 66
     }
   ]
-  t.deepEqual(lib.prepRawData(input), expected)
+  t.deepEqual(lib.prepTsData(input), expected)
 })
 
 test('Return 0 as 0', t => {
@@ -43,7 +43,7 @@ test('Return 0 as 0', t => {
       value: 0
     }
   ]
-  t.deepEqual(lib.prepRawData(input), expected)
+  t.deepEqual(lib.prepTsData(input), expected)
 })
 
 test('Return empty strings as null', t => {
@@ -62,7 +62,26 @@ test('Return empty strings as null', t => {
       value: null
     }
   ]
-  t.deepEqual(lib.prepRawData(input), expected)
+  t.deepEqual(lib.prepTsData(input), expected)
+})
+
+test('Return non-numeric as null', t => {
+  let input = [
+    {
+      dico: '1401',
+      indicator: '1',
+      '1999': 'nd'
+    }
+  ]
+  let expected = [
+    {
+      id: 1401,
+      indicator: '1',
+      year: 1999,
+      value: null
+    }
+  ]
+  t.deepEqual(lib.prepTsData(input), expected)
 })
 
 test('Don\'t return anything if there is no year', t => {
@@ -74,7 +93,42 @@ test('Don\'t return anything if there is no year', t => {
     }
   ]
   let expected = []
-  t.deepEqual(lib.prepRawData(input), expected)
+  t.deepEqual(lib.prepTsData(input), expected)
+})
+
+test('Detect Multi Value fields', t => {
+  let input = [
+    { 'foo': 'cha', 'bar': 'cafe' },
+    { 'foo': 'cha', 'bar': 'cafe;laranjada' }
+  ]
+  let expected = [ 'bar' ]
+  t.deepEqual(lib.getMultiValueFields(input), expected)
+})
+
+test('Parse values that should be an array', t => {
+  let input = [
+    { 'foo': 'cha', 'bar': 'cafe' },
+    { 'foo': 'cha', 'bar': 'cafe;laranjada' }
+  ]
+  let cols = [ 'bar' ]
+  let expected = [
+    { 'foo': 'cha', 'bar': ['cafe'] },
+    { 'foo': 'cha', 'bar': ['cafe', 'laranjada'] }
+  ]
+  t.deepEqual(lib.parseMultiValueField(input, cols), expected)
+})
+
+test('Don\'t parse values if no col is specified', t => {
+  let input = [
+    { 'foo': 'cha', 'bar': 'cafe' },
+    { 'foo': 'cha', 'bar': 'cafe;laranjada' }
+  ]
+  let cols = [ ]
+  let expected = [
+    { 'foo': 'cha', 'bar': 'cafe' },
+    { 'foo': 'cha', 'bar': 'cafe;laranjada' }
+  ]
+  t.deepEqual(lib.parseMultiValueField(input, cols), expected)
 })
 
 test('Backfill null values', t => {
@@ -218,6 +272,25 @@ test('Don\'t return anything if there is no year', t => {
   t.deepEqual(lib.uniqueValues(input, 'name'), expected)
 })
 
+test('Add meta data to an admin area', t => {
+  let inputArea = {
+    'id': 1401,
+    'data': {}
+  }
+  let inputMeta = [
+    { id: 1400, contingente: 'total', estacionamento: [ 'livre' ] },
+    { id: 1401, contingente: 'total', estacionamento: [ 'meio' ] }
+  ]
+  let expected = {
+    'id': 1401,
+    'data': {
+      'contingente': 'total',
+      'estacionamento': ['meio']
+    }
+  }
+  t.deepEqual(lib.addMetaData(inputArea, inputMeta), expected)
+})
+
 test('Add data to a single area', t => {
   let inputArea = {
     'id': 1401,
@@ -238,7 +311,7 @@ test('Add data to a single area', t => {
       ]
     }
   }
-  t.deepEqual(lib.addData(inputArea, inputData), expected)
+  t.deepEqual(lib.addTsData(inputArea, inputData), expected)
 })
 
 test('Add data to an area and aggregate properly', t => {
@@ -263,7 +336,7 @@ test('Add data to an area and aggregate properly', t => {
       ]
     }
   }
-  t.deepEqual(lib.addData(inputArea, inputData), expected)
+  t.deepEqual(lib.addTsData(inputArea, inputData), expected)
 })
 
 test('Aggregate properly on successive attempts', t => {
@@ -292,8 +365,8 @@ test('Aggregate properly on successive attempts', t => {
       ]
     }
   }
-  lib.addData(inputArea1, inputData)
-  t.deepEqual(lib.addData(inputArea2, inputData), expected2)
+  lib.addTsData(inputArea1, inputData)
+  t.deepEqual(lib.addTsData(inputArea2, inputData), expected2)
 })
 
 test('Add data to an area and aggregate properly with nulls', t => {
@@ -317,7 +390,7 @@ test('Add data to an area and aggregate properly with nulls', t => {
       ]
     }
   }
-  t.deepEqual(lib.addData(inputArea, inputData), expected)
+  t.deepEqual(lib.addTsData(inputArea, inputData), expected)
 })
 
 test('Join a TopoJSON with data', t => {

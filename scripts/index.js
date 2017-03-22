@@ -1,30 +1,39 @@
 const async = require('async')
 const fs = require('fs-extra')
+const omit = require('lodash.omit')
 const parse = require('csv-parse')
 const lib = require('./lib.js')
 
 async.parallel([
   function (cb) {
-    // Parse meta-data about the concelhos
-    // Returns an array with all admin areas and their meta-data
+    // Parse area data about the concelhos
+    // Returns an array with all admin areas
     parse(fs.readFileSync('./data/concelhos.csv'), {columns: true}, function (err, output) {
       let areas = lib.generateAreas(output)
       cb(err, areas)
     })
   },
   function (cb) {
-    // Parse source data with taxis by concelho
-    // Returns an array of records for a unique concelho, year, indicator
-    parse(fs.readFileSync('./data/taxis.csv'), {columns: true}, function (err, output) {
-      let data = lib.prepRawData(output)
+    // Parse meta-data for each concelho
+    parse(fs.readFileSync('./data/area-metadata.csv'), {columns: true}, function (err, output) {
+      // Parse any column that contains an array
+      let data = lib.parseMultiValueField(output, lib.getMultiValueFields(output))
       cb(err, data)
     })
   },
   function (cb) {
-    // Parse population estimates by concelho
+    // Parse time series data with taxis by concelho
+    // Returns an array of records for a unique concelho, year, indicator
+    parse(fs.readFileSync('./data/taxis.csv'), {columns: true}, function (err, output) {
+      let data = lib.prepTsData(output)
+      cb(err, data)
+    })
+  },
+  function (cb) {
+    // Parse time series data with population estimates by concelho
     // Returns an array of records for each concelho + year
     parse(fs.readFileSync('./data/population.csv'), {columns: true}, function (err, output) {
-      let data = lib.prepRawData(output)
+      let data = lib.prepTsData(output)
       cb(err, data)
     })
   }
@@ -32,19 +41,21 @@ async.parallel([
 function (err, results) {
   if (err) { console.log(err.message) }
 
-  const areaMeta = results[0]
-  // Merge the raw taxi data (results[1]) and the population estimates (results[2])
-  const rawData = [].concat(results[1], results[2])
+  const areas = results[0]
 
-  // Back-fill those nulls
-  const backfilledData = lib.backfillData(rawData)
+  // Combine the admin areas with the meta data (results[1])
+  const areasWithMeta = areas.map(area => lib.addMetaData(area, results[1]))
 
-  // Combine the area meta-data with the raw data
-  const processedDataFull = areaMeta.map(area => lib.addData(area, backfilledData))
-  const processedDataRecent = areaMeta.map(area => lib.addData(area, backfilledData.filter(d => d.year >= 2006)))
+  // Merge the Time Series data: taxi data (results[2]) and the population
+  // estimates (results[3]) and back-fill the nulls
+  const backfilledData = lib.backfillData([].concat(results[2], results[3]))
+
+  // Combine the admin areas with the Time Series data
+  const processedDataFull = areasWithMeta.map(area => lib.addTsData(area, backfilledData))
+  const processedDataRecent = areasWithMeta.map(area => lib.addTsData(area, backfilledData.filter(d => d.year >= 2006)))
 
   // Generate a JSON file for each admin area type
-  var tasks = lib.uniqueValues(areaMeta, 'type').map(type => {
+  var tasks = lib.uniqueValues(areas, 'type').map(type => {
     return function (cb) {
       const data = processedDataFull.filter(o => o.type === type)
       lib.storeResponse(
@@ -69,6 +80,26 @@ function (err, results) {
         data,
         'national.json',
         'Data about taxis in Portugal from 2006 on, aggregated by NUT3 and concelho'
+      )
+      cb()
+    })
+
+  // Generate a a light-weight JSON file with the hierarchy of admin areas for the menu
+  tasks.push(
+    function (cb) {
+      const data = processedDataRecent
+        .filter(o => o.type === 'nut3')
+        .map(d => {
+          d.concelhos = d.concelhos.map(c => {
+            let match = processedDataRecent.find(p => p.id === c)
+            return omit(match, ['type', 'concelhos', 'data'])
+          })
+          return omit(d, ['type', 'data'])
+        })
+      lib.storeResponse(
+        data,
+        'national-menu.json',
+        'The NUT3 areas with their concelhos'
       )
       cb()
     })
