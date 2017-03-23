@@ -7,10 +7,14 @@ const lib = require('./lib.js')
 async.parallel([
   function (cb) {
     // Parse area data about the concelhos
-    // Returns an array with all admin areas
     parse(fs.readFileSync('./data/concelhos.csv'), {columns: true}, function (err, output) {
-      let areas = lib.generateAreas(output)
-      cb(err, areas)
+      cb(err, output)
+    })
+  },
+  function (cb) {
+    // Parse meta-data for each concelho
+    parse(fs.readFileSync('./data/area-abbreviations.csv'), {columns: true}, function (err, output) {
+      cb(err, output)
     })
   },
   function (cb) {
@@ -41,14 +45,15 @@ async.parallel([
 function (err, results) {
   if (err) { console.log(err.message) }
 
-  const areas = results[0]
+  // Generate base objects for all admin areas
+  const areas = lib.generateAreas(results[0], results[1])
 
-  // Combine the admin areas with the meta data (results[1])
-  const areasWithMeta = areas.map(area => lib.addMetaData(area, results[1]))
+  // Combine the admin areas with the meta data (results[2])
+  const areasWithMeta = areas.map(area => lib.addMetaData(area, results[2]))
 
-  // Merge the Time Series data: taxi data (results[2]) and the population
-  // estimates (results[3]) and back-fill the nulls
-  const backfilledData = lib.backfillData([].concat(results[2], results[3]))
+  // Merge the Time Series data: taxi data (results[3]) and the population
+  // estimates (results[4]) and back-fill the nulls
+  const backfilledData = lib.backfillData([].concat(results[3], results[4]))
 
   // Combine the admin areas with the Time Series data
   const processedDataFull = areasWithMeta.map(area => lib.addTsData(area, backfilledData))
@@ -91,7 +96,7 @@ function (err, results) {
         .filter(o => o.type === 'nut3')
         .map(d => {
           d.concelhos = d.concelhos.map(c => {
-            let match = processedDataRecent.find(p => p.id === c)
+            let match = processedDataRecent.find(p => p.id === c.id)
             return omit(match, ['type', 'concelhos', 'data'])
           })
           return omit(d, ['type', 'data'])
