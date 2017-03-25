@@ -40,6 +40,14 @@ async.parallel([
       let data = lib.prepTsData(output)
       cb(err, data)
     })
+  },
+  function (cb) {
+    // Parse time series data with population estimates by concelho
+    // Returns an array of records for each concelho + year
+    parse(fs.readFileSync('./data/dormidas.csv'), {columns: true}, function (err, output) {
+      let data = lib.prepTsData(output)
+      cb(err, data)
+    })
   }
 ],
 function (err, results) {
@@ -51,9 +59,9 @@ function (err, results) {
   // Combine the admin areas with the meta data (results[2])
   const areasWithMeta = areas.map(area => lib.addMetaData(area, results[2]))
 
-  // Merge the Time Series data: taxi data (results[3]) and the population
-  // estimates (results[4]) and back-fill the nulls
-  const backfilledData = lib.backfillData([].concat(results[3], results[4]))
+  // Merge the Time Series data: taxi data (results[3]), the population
+  // estimates (results[4]), dormidas (results[5]) and back-fill the nulls
+  const backfilledData = lib.backfillData([].concat(results[3], results[4], results[5]))
 
   // Combine the admin areas with the Time Series data
   const processedDataFull = areasWithMeta.map(area => lib.addTsData(area, backfilledData))
