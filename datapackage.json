@@ -22,6 +22,19 @@
       "schema": "taxis"
     },
     {
+      "name": "dormidas",
+      "title": "Nights spent in hotels",
+      "description": "Annual number of nights spent in hotels by concelho.",
+      "data": "data/dormidas.csv",
+      "sources": [
+        {
+          "name": "ine",
+          "title": "Instituto Nacional de Estatística",
+          "uri": "https://www.ine.pt"
+        }
+      ]
+    },
+    {
       "name": "population",
       "title": "Population Estimates",
       "description": "Annual estimates of resident population by concelho. Estimates generated on February 10, 2017.",
