@@ -127,6 +127,12 @@ function (err, results) {
     }
   )
 
+  tasks.push(
+    function (cb) {
+      fs.copy('./data/national-dormidas.json', './export/national-dormidas.json')
+      cb()
+    }
+
   async.parallel(tasks, function (err) {
     if (err) { console.log(err.message) }
     console.log('Done!')
