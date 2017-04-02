@@ -29,7 +29,7 @@ async.parallel([
     // Parse time series data with taxis by concelho
     // Returns an array of records for a unique concelho, year, indicator
     parse(fs.readFileSync('./data/taxis.csv'), {columns: true}, function (err, output) {
-      let data = lib.prepTsData(output)
+      let data = lib.backfillData(lib.prepTsData(output))
       cb(err, data)
     })
   },
@@ -61,11 +61,11 @@ function (err, results) {
 
   // Merge the Time Series data: taxi data (results[3]), the population
   // estimates (results[4]), dormidas (results[5]) and back-fill the nulls
-  const backfilledData = lib.backfillData([].concat(results[3], results[4], results[5]))
+  const tsData = [].concat(results[3], results[4], results[5])
 
   // Combine the admin areas with the Time Series data
-  const processedDataFull = areasWithMeta.map(area => lib.addTsData(area, backfilledData))
-  const processedDataRecent = areasWithMeta.map(area => lib.addTsData(area, backfilledData.filter(d => d.year >= 2006)))
+  const processedDataFull = areasWithMeta.map(area => lib.addTsData(area, tsData))
+  const processedDataRecent = areasWithMeta.map(area => lib.addTsData(area, tsData.filter(d => d.year >= 2006)))
 
   // Generate a JSON file for each admin area type
   var tasks = lib.uniqueValues(areas, 'type').map(type => {
