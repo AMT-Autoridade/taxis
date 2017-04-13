@@ -64,17 +64,16 @@ function (err, results) {
   const tsData = [].concat(results[3], results[4], results[5])
 
   // Combine the admin areas with the Time Series data
-  const processedDataFull = areasWithMeta.map(area => lib.addTsData(area, tsData))
-  const processedDataRecent = areasWithMeta.map(area => lib.addTsData(area, tsData.filter(d => d.year >= 2006)))
+  const processedData = areasWithMeta.map(area => lib.addTsData(area, tsData))
 
   // Generate a JSON file for each admin area type
   var tasks = lib.uniqueValues(areas, 'type').map(type => {
     return function (cb) {
-      const data = processedDataFull.filter(o => o.type === type)
+      const data = processedData.filter(o => o.type === type)
       lib.storeResponse(
         data,
         `${type}-full.json`,
-        `Data about taxis in Portugal from 1998 on, aggregated by ${type}`
+        `Data about taxis in Portugal from 2006 on, aggregated by ${type}`
       )
       cb()
     }
@@ -83,10 +82,10 @@ function (err, results) {
   // Generate a JSON file with data for all districts and concelhos
   tasks.push(
     function (cb) {
-      const data = processedDataRecent
+      const data = processedData
         .filter(o => o.type === 'nut3')
         .map(d => {
-          d.concelhos = d.concelhos.map(c => processedDataRecent.find(p => p.id === c))
+          d.concelhos = d.concelhos.map(c => processedData.find(p => p.id === c))
           return d
         })
       lib.storeResponse(
@@ -100,11 +99,11 @@ function (err, results) {
   // Generate a a light-weight JSON file with the hierarchy of admin areas for the menu
   tasks.push(
     function (cb) {
-      const data = processedDataRecent
+      const data = processedData
         .filter(o => o.type === 'nut3')
         .map(d => {
           d.concelhos = d.concelhos.map(c => {
-            let match = processedDataRecent.find(p => p.id === c.id)
+            let match = processedData.find(p => p.id === c.id)
             return omit(match, ['type', 'concelhos', 'data'])
           })
           return omit(d, ['type', 'data'])
@@ -122,7 +121,7 @@ function (err, results) {
   tasks.push(
     function (cb) {
       fs.copy('./data/admin-areas.topojson', './export/admin-areas.topojson')
-      fs.writeFileSync('./export/admin-areas-data.topojson', JSON.stringify(lib.joinTopo(topo, processedDataRecent, 'id')))
+      fs.writeFileSync('./export/admin-areas-data.topojson', JSON.stringify(lib.joinTopo(topo, processedData, 'id')))
       cb()
     }
   )
