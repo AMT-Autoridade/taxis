@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "name": "observatorio-taxis-data",
+    "description": "Data about total number of nights slept in hotels in Portugal from 2006 on, aggregated on a national level.",
+    "source": {
+      "name": "Autoridade da Mobilidade e dos Transportes",
+      "web": "http://www.amt-autoridade.pt"
+    },
+    "license": "CC-BY-4.0"
+  },
+  "results": [
+    {
+      "id": "1",
+      "name": "Portugal",
+      "type": "national",
+      "slug": "portugal",
+      "display": "Portugal",
+      "data": {
+        "dormidas": [
+          {
+            "year": 2015,
+            "value": 53074176
+          },
+          {
+            "year": 2014  ,
+            "value": 48711366
+          },
+          {
+            "year": 2013,
+            "value": 43533151
+          },
+          {
+            "year": 2012,
+            "value": 39681040
+          },
+          {
+            "year": 2011,
+            "value": 39440315
+          },
+          {
+            "year": 2010,
+            "value": 37391291
+          },
+          {
+            "year": 2009,
+            "value": 36457069
+          },
+          {
+            "year": 2008,
+            "value": 39227938
+          },
+          {
+            "year": 2007,
+            "value": 39736583
+          },
+          {
+            "year": 2006,
+            "value": 37566461
+          }
+        ]
+      }
+    }
+  ]
+}

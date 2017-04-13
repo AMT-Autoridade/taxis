@@ -29,7 +29,7 @@ async.parallel([
     // Parse time series data with taxis by concelho
     // Returns an array of records for a unique concelho, year, indicator
     parse(fs.readFileSync('./data/taxis.csv'), {columns: true}, function (err, output) {
-      let data = lib.prepTsData(output)
+      let data = lib.backfillData(lib.prepTsData(output))
       cb(err, data)
     })
   },
@@ -37,6 +37,14 @@ async.parallel([
     // Parse time series data with population estimates by concelho
     // Returns an array of records for each concelho + year
     parse(fs.readFileSync('./data/population.csv'), {columns: true}, function (err, output) {
+      let data = lib.prepTsData(output)
+      cb(err, data)
+    })
+  },
+  function (cb) {
+    // Parse time series data with population estimates by concelho
+    // Returns an array of records for each concelho + year
+    parse(fs.readFileSync('./data/dormidas.csv'), {columns: true}, function (err, output) {
       let data = lib.prepTsData(output)
       cb(err, data)
     })
@@ -51,12 +59,12 @@ function (err, results) {
   // Combine the admin areas with the meta data (results[2])
   const areasWithMeta = areas.map(area => lib.addMetaData(area, results[2]))
 
-  // Merge the Time Series data: taxi data (results[3]) and the population
-  // estimates (results[4]) and back-fill the nulls
-  const backfilledData = lib.backfillData([].concat(results[3], results[4]))
+  // Merge the Time Series data: taxi data (results[3]), the population
+  // estimates (results[4]), dormidas (results[5]) and back-fill the nulls
+  const tsData = [].concat(results[3], results[4], results[5])
 
   // Combine the admin areas with the Time Series data
-  const processedData = areasWithMeta.map(area => lib.addTsData(area, backfilledData))
+  const processedData = areasWithMeta.map(area => lib.addTsData(area, tsData))
 
   // Generate a JSON file for each admin area type
   var tasks = lib.uniqueValues(areas, 'type').map(type => {
@@ -114,6 +122,13 @@ function (err, results) {
     function (cb) {
       fs.copy('./data/admin-areas.topojson', './export/admin-areas.topojson')
       fs.writeFileSync('./export/admin-areas-data.topojson', JSON.stringify(lib.joinTopo(topo, processedData, 'id')))
+      cb()
+    }
+  )
+
+  tasks.push(
+    function (cb) {
+      fs.copy('./data/national-dormidas.json', './export/national-dormidas.json')
       cb()
     }
   )
