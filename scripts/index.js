@@ -82,12 +82,16 @@ function (err, results) {
   // Generate a JSON file with data for all districts and concelhos
   tasks.push(
     function (cb) {
-      const data = processedData
+      let data = processedData
         .filter(o => o.type === 'nut3')
         .map(d => {
           d.concelhos = d.concelhos.map(c => processedData.find(p => p.id === c))
           return d
         })
+
+      // The national data on dormidas can't be aggregated from concelhos
+      data.push(require('../data/national-dormidas.json'))
+
       lib.storeResponse(
         data,
         'national.json',
@@ -122,13 +126,6 @@ function (err, results) {
     function (cb) {
       fs.copy('./data/admin-areas.topojson', './export/admin-areas.topojson')
       fs.writeFileSync('./export/admin-areas-data.topojson', JSON.stringify(lib.joinTopo(topo, processedData, 'id')))
-      cb()
-    }
-  )
-
-  tasks.push(
-    function (cb) {
-      fs.copy('./data/national-dormidas.json', './export/national-dormidas.json')
       cb()
     }
   )
