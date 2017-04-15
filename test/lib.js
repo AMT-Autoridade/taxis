@@ -455,3 +455,23 @@ test('Join a TopoJSON with data', t => {
   }
   t.deepEqual(lib.joinTopo(inputTopo, inputData, 'id'), expected)
 })
+
+test('Parse the files folder', t => {
+  let folder = './test/fixtures/files/'
+  let expected = [
+    {
+      'id': '1201',
+      'files': [
+        'test/fixtures/files/1201/test1.txt',
+        'test/fixtures/files/1201/test2.txt'
+      ]
+    },
+    {
+      'id': '1604',
+      'files': [
+        'test/fixtures/files/1604-moncao/test.txt'
+      ]
+    }
+  ]
+  t.deepEqual(lib.parseFileFolder(folder), expected)
+})

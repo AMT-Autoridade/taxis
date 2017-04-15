@@ -18,6 +18,11 @@ async.parallel([
     })
   },
   function (cb) {
+    // Parse the contents of the files folder
+    let data = lib.parseFileFolder()
+    cb(null, data)
+  },
+  function (cb) {
     // Parse meta-data for each concelho
     parse(fs.readFileSync('./data/area-metadata.csv'), {columns: true}, function (err, output) {
       // Parse any column that contains an array
@@ -54,14 +59,14 @@ function (err, results) {
   if (err) { console.log(err.message) }
 
   // Generate base objects for all admin areas
-  const areas = lib.generateAreas(results[0], results[1])
+  const areas = lib.generateAreas(results[0], results[1], results[2])
 
   // Combine the admin areas with the meta data (results[2])
-  const areasWithMeta = areas.map(area => lib.addMetaData(area, results[2]))
+  const areasWithMeta = areas.map(area => lib.addMetaData(area, results[3]))
 
-  // Merge the Time Series data: taxi data (results[3]), the population
-  // estimates (results[4]), dormidas (results[5]) and back-fill the nulls
-  const tsData = [].concat(results[3], results[4], results[5])
+  // Merge the Time Series data: taxi data (results[4]), the population
+  // estimates (results[5]), dormidas (results[6]) and back-fill the nulls
+  const tsData = [].concat(results[4], results[5], results[6])
 
   // Combine the admin areas with the Time Series data
   const processedData = areasWithMeta.map(area => lib.addTsData(area, tsData))

@@ -7,3 +7,4 @@ dist/*
 data/utils/src
 data/utils/export
 data/utils/tmp
+*.log

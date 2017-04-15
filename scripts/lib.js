@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 const kebab = require('lodash.kebabcase')
 const omit = require('lodash.omit')
+const path = require('path')
 
 /**
  * Parse objects parsed from CSV with data for multiple years and generate
@@ -124,7 +125,7 @@ module.exports.uniqueValues = function (array, key) {
  * @param {Array} abbreviations - An array with abbreviations for the admin areas
  * @returns {Array} An array of objects with meta-data for each administrative area
  */
-module.exports.generateAreas = function (concelhos, abbreviations) {
+module.exports.generateAreas = function (concelhos, abbreviations, files) {
   let finalAreas = []
 
   // Generate meta-data for other areas types as well
@@ -140,6 +141,7 @@ module.exports.generateAreas = function (concelhos, abbreviations) {
 
       let name = childConcelhos[0][`${type}_name`]
       let abbr = abbreviations.find(o => o.id.toString() === area.toString())
+      let file = files.find(o => o.id.toString() === area.toString())
 
       finalAreas.push({
         'id': parseInt(area) || area,
@@ -148,11 +150,48 @@ module.exports.generateAreas = function (concelhos, abbreviations) {
         'slug': kebab(childConcelhos[0][`${type}_name`]),
         'display': abbr ? abbr.abbreviation : name,
         'concelhos': childConcelhos.map(o => parseInt(o.concelho) || o.concelho),
+        'files': file ? file.files : [],
         'data': {}
       })
     })
   })
   return finalAreas
+}
+
+/**
+ * Parse the contents of the /files folder and return an array with file paths
+ * per admin area
+ *
+ * @name parseFileFolder
+ * @param {String} folder - path to the folder to be parsed in relation to
+ *                          the root of the project. Default: './files'
+ * @example
+ * // returns [{ 'id': '1604', 'files': [ 'files/1604/regulamento.pdf' ] }, { 'id': '102', 'files": [ 'files/102/regulamento.pdf' ] }]
+ * parseFileFolder()
+ * @returns {Object}
+ */
+module.exports.parseFileFolder = function (folder = './files') {
+  let adminFiles = []
+  fs.readdirSync(folder).map(o => {
+    let p = path.join(folder, o)
+
+    // only interested if p is a directory
+    if (fs.lstatSync(p).isDirectory()) {
+      let files = fs.readdirSync(p).map(f => {
+        let fp = path.join(p, f)
+        // only interested if content of p is a file
+        if (fs.lstatSync(fp).isFile()) return fp
+      })
+      // don't return anything if the folder is empty
+      if (files.length > 0) {
+        adminFiles.push({
+          'id': o.split('-')[0],
+          'files': files
+        })
+      }
+    }
+  })
+  return adminFiles
 }
 
 /**
