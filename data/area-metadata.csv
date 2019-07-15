@@ -16,13 +16,13 @@ id,contingente,estacionamento
 115,infra concelho,condicionado
 116,concelho,condicionado
 117,infra concelho,fixo
-118,concelho,fixo 
+118,concelho,fixo
 119,concelho,condicionado
 201,infra concelho,fixo
 202,infra concelho,fixo
 203,infra concelho,condicionado
 204,concelho,fixo
-205,infra concelho,condicionado
+205,infra concelho,condicionado;fixo
 206,concelho,fixo
 207,concelho,fixo
 208,infra concelho,fixo
@@ -30,8 +30,8 @@ id,contingente,estacionamento
 210,concelho,fixo
 211,concelho,livre
 212,concelho,fixo
-213,infra concelho,condicionado
-214,infra concelho,fixo 
+213,infra concelho,condicionado;livre
+214,infra concelho,fixo
 301,infra concelho,fixo;condicionado
 302,concelho,fixo;condicionado
 303,infra concelho,fixo;condicionado
@@ -50,7 +50,7 @@ id,contingente,estacionamento
 402,infra concelho,fixo;condicionado
 403,infra concelho,fixo;livre
 404,infra concelho,fixo;livre
-405,infra concelho,fixo;condicionado
+405,concelho,fixo;condicionado
 406,infra concelho,fixo
 407,infra concelho,fixo;condicionado
 408,infra concelho,fixo;condicionado
@@ -63,7 +63,7 @@ id,contingente,estacionamento
 503,infra concelho,fixo;condicionado
 504,infra concelho,fixo;condicionado
 505,infra concelho,fixo;livre
-506,infra concelho,fixo
+506,infra concelho,fixo;condicionado
 507,infra concelho,fixo
 508,infra concelho,fixo
 509,infra concelho,fixo;condicionado
@@ -73,7 +73,7 @@ id,contingente,estacionamento
 602,infra concelho,fixo;condicionado
 603,infra concelho,fixo;condicionado
 604,infra concelho,fixo
-605,,fixo;condicionado
+605,concelho,fixo;condicionado
 606,infra concelho,fixo
 607,infra concelho,fixo
 608,infra concelho,fixo
@@ -109,14 +109,14 @@ id,contingente,estacionamento
 807,infra concelho,condicionado
 808,concelho,condicionado
 809,infra concelho,fixo
-810,concelho,condicionado
-811,concelho,livre
+810,infra concelho,condicionado
+811,concelho,condicionado
 812,concelho,fixo
 813,infra concelho,fixo;condicionado
 814,concelho,fixo;condicionado;escala;livre
 815,infra concelho,fixo;livre
-816,concelho,condicionado
-901,infra concelho,condicionado;livre
+816,infra concelho,condicionado
+901,infra concelho,fixo;livre
 902,infra concelho,livre
 903,infra concelho,fixo;condicionado
 904,infra concelho,fixo
@@ -137,7 +137,7 @@ id,contingente,estacionamento
 1005,infra concelho,fixo
 1006,infra concelho,fixo;condicionado
 1007,concelho,fixo
-1008,infra concelho,fixo 
+1008,infra concelho,fixo
 1009,infra concelho,fixo;condicionado
 1010,infra concelho,fixo;condicionado
 1011,infra concelho,fixo;livre
@@ -175,7 +175,7 @@ id,contingente,estacionamento
 1211,infra concelho,fixo;livre
 1212,infra concelho,fixo
 1213,infra concelho,fixo;condicionado
-1214,infra concelho,fixo
+1214,infra concelho,fixo;condicionado
 1215,infra concelho,condicionado;livre
 1301,infra concelho,fixo;condicionado
 1302,infra concelho,fixo;condicionado;livre
@@ -194,7 +194,7 @@ id,contingente,estacionamento
 1315,infra concelho,condicionado
 1316,infra concelho,fixo;condicionado
 1317,infra concelho,condicionado;escala;livre
-1318,infra concelho,fixo;condicionado
+1318,concelho,fixo;condicionado
 1401,infra concelho,fixo;condicionado
 1402,infra concelho,fixo
 1403,concelho,fixo;condicionado;livre
@@ -204,9 +204,9 @@ id,contingente,estacionamento
 1407,infra concelho,fixo;condicionado;livre
 1408,infra concelho,condicionado
 1409,infra concelho,escala
-1410,infra concelho,condicionado
+1410,concelho,condicionado
 1411,infra concelho,condicionado;livre
-1412,infra concelho,fixo;condicionado;escala;livre
+1412,infra concelho,fixo;livre
 1413,infra concelho,fixo
 1414,infra concelho,fixo
 1415,infra concelho,fixo;livre
@@ -220,14 +220,14 @@ id,contingente,estacionamento
 1502,concelho,fixo;condicionado
 1503,concelho,condicionado
 1504,concelho,condicionado
-1505,concelho,fixo
-1506,infra concelho,fixo;condicionado
+1505,infra concelho,fixo
+1506,concelho,fixo;condicionado
 1507,concelho,fixo
 1508,infra concelho,fixo
 1509,infra concelho,fixo;condicionado
 1510,concelho,condicionado
 1511,infra concelho,fixo;condicionado
-1512,infra concelho,condicionado
+1512,infra concelho,condicionado;fixo
 1513,infra concelho,fixo
 1601,infra concelho,condicionado
 1602,infra concelho,fixo
@@ -235,7 +235,7 @@ id,contingente,estacionamento
 1604,infra concelho,fixo;condicionado
 1605,infra concelho,fixo;condicionado
 1606,infra concelho,fixo;condicionado
-1607,concelho,livre
+1607,concelho,fixo;escala
 1608,infra concelho,fixo;condicionado
 1609,infra concelho,fixo;condicionado
 1610,infra concelho,fixo
@@ -283,27 +283,27 @@ id,contingente,estacionamento
 3104,infra concelho,fixo
 3105,infra concelho,fixo
 3106,infra concelho,fixo
-3201,concelho,fixo
 3107,infra concelho,condicionado
-3108,infra concelho,condicionado;escala
-3109,,fixo
+3108,infra concelho,condicionado
+3109,infra concelho,fixo
 3110,infra concelho,fixo
+3201,concelho,fixo;escala
+4101,concelho,fixo;condicionado
 4201,infra concelho,
 4202,infra concelho,fixo
 4203,concelho,fixo;condicionado
 4204,infra concelho,fixo;livre
-4205,infra concelho,fixo;livre
-4101,concelho,fixo;condicionado
+4205,infra concelho,fixo
 4206,concelho,fixo
-4901,,
-4801,infra concelho,fixo;condicionado
-4802,concelho,fixo;livre
 4301,concelho,condicionado
+4302,infra concelho,fixo;livre;condicionado
+4401,infra concelho,fixo
 4501,infra concelho,fixo;condicionado
-4701,concelho,livre
+4502,infra concelho,fixo;condicionado
 4601,concelho,fixo;livre
 4602,concelho,condicionado;livre
-4302,infra concelho,fixo;livre
-4401,infra concelho,fixo
 4603,infra concelho,fixo
-4502,infra concelho,fixo;condicionado
+4701,concelho,livre
+4801,infra concelho,fixo
+4802,concelho,fixo
+4901,,
